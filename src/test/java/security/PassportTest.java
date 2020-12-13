@@ -53,12 +53,12 @@ class PassportTest
    @Test
    void checkDay4() throws IOException
    {
-      Assertions.assertEquals(Day4.countValids(Day4.INPUT_FILE_LOC), 260);
+      Assertions.assertEquals(260, Day4.countValids(Day4.INPUT_FILE_LOC));
    }
    
    @Test
    void checkDay4B() throws IOException
    {
-      Assertions.assertEquals(Day4B.countValids(Day4B.INPUT_FILE_LOC), 153);
+      Assertions.assertEquals(153, Day4B.countValids(Day4B.INPUT_FILE_LOC));
    }
 }
