@@ -1,4 +1,4 @@
-package days;
+package years.y2020.days;
 
 import security.*;
 import util.*;
@@ -6,22 +6,23 @@ import util.*;
 import java.io.*;
 
 
-public class Day4
+public class Day04A
 {
-   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION + "input4.txt";
+   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION +
+      "years/y2020/input4.txt";
    
    
    public static void main(String[] args) throws IOException
    {
-      System.out.println(countValids(INPUT_FILE_LOC));
+      System.out.println(getAnswer());
    }
    
    
-   public static int countValids(String file) throws IOException
+   public static int getAnswer() throws IOException
    {
       int validPassportCount = 0;
       
-      for (Passport passport : Passport.getPassportsFromInput(file))
+      for (Passport passport : Passport.getPassportsFromInput(INPUT_FILE_LOC))
       {
          if (passport.hasRequiredFields())
             validPassportCount++;

@@ -1,21 +1,25 @@
-package days;
+package years.y2020.days;
 
 import util.*;
 
 import java.io.*;
-import java.util.concurrent.atomic.*;
 
 
-public class Day2B
+public class Day02B
 {
-   private static final String INPUT_FILE_LOC = "input2.txt";
+   private static final String INPUT_FILE_LOC =
+      ReaderUtil.RESOURCES_LOCATION + "years/y2020/input2.txt";
    
    
    public static void main(String[] args) throws IOException
    {
-      AtomicInteger validPasswordCount = new AtomicInteger();
-      
-      ReaderUtil.parseFileWithMethod(
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static int getAnswer() throws IOException
+   {
+      return ReaderUtil.parseFileToList(
          INPUT_FILE_LOC,
          (String line) ->
          {
@@ -28,10 +32,9 @@ public class Day2B
             
             if ((password.length() >= posA && password.charAt(posA) == requirement)
                != (password.length() >= posB && password.charAt(posB) == requirement))
-               validPasswordCount.getAndIncrement();
+               return 1;
+            return 0;
          }
-      );
-      
-      System.out.println(validPasswordCount.get());
+      ).stream().mapToInt(i -> i).sum();
    }
 }

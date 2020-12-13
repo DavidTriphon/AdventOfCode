@@ -1,4 +1,4 @@
-package days;
+package years.y2020.days;
 
 import map.*;
 import util.*;
@@ -8,12 +8,12 @@ import java.io.*;
 import java.util.List;
 
 
-public class Day3B
+public class Day03B
 {
-   private static final String INPUT_FILE_LOC = "input3.txt";
+   private static final String INPUT_FILE_LOC =
+      ReaderUtil.RESOURCES_LOCATION + "years/y2020/input3.txt";
    
-   private static final int  SLOPE = 3;
-   private static final char TREE  = '#';
+   private static final char TREE = '#';
    
    private static final List <Point> SLOPES = List.of(
       new Point(1, 1),
@@ -25,6 +25,12 @@ public class Day3B
    
    
    public static void main(String[] args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
    {
       FiniteGridMap <Character> hillMap =
          FiniteGridMap.fromString(ReaderUtil.getFileString(INPUT_FILE_LOC), c -> c);
@@ -49,6 +55,6 @@ public class Day3B
          treeMultiple *= trees;
       }
       
-      System.out.println(treeMultiple);
+      return treeMultiple;
    }
 }

@@ -1,4 +1,4 @@
-package days;
+package years.y2020.days;
 
 import util.*;
 
@@ -6,21 +6,22 @@ import java.io.*;
 import java.util.*;
 
 
-public class Day6B
+public class Day06B
 {
-   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION + "input6.txt";
+   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION +
+      "years/y2020/input6.txt";
    
    
    public static void main(String[] args) throws IOException
    {
-      System.out.println(countGroupAnswers(INPUT_FILE_LOC));
+      System.out.println(getAnswer());
    }
    
    
-   public static int countGroupAnswers(String file) throws IOException
+   public static int getAnswer() throws IOException
    {
       List <String> groups = ReaderUtil.parseFileToList(
-         file, "\n\n", (group) ->
+         INPUT_FILE_LOC, "\n\n", (group) ->
          {
             String[] individuals = group.split("\n");
             

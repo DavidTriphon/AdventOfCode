@@ -1,4 +1,4 @@
-package days;
+package years.y2020.days;
 
 import luggage.*;
 import util.*;
@@ -8,9 +8,10 @@ import java.util.*;
 import java.util.regex.*;
 
 
-public class Day7
+public class Day07B
 {
-   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION + "input7.txt";
+   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION +
+      "years/y2020/input7.txt";
    
    public static final String BAG_REGEX   = "([\\sa-z]+) bags?";
    public static final String COUNT_REGEX = "(\\d+) " + BAG_REGEX;
@@ -24,6 +25,11 @@ public class Day7
    
    
    public static void main(String[] args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   public static int getAnswer() throws IOException
    {
       Map <String, ColoredBag> bagRuleMap = ReaderUtil.parseFileToMap(
          INPUT_FILE_LOC, (line) ->
@@ -65,14 +71,8 @@ public class Day7
          ColoredBag::getColor
       );
       
-      int shinyGoldContainers = 0;
+      ColoredBag shinyGoldBag = bagRuleMap.get("shiny gold");
       
-      for (ColoredBag bag : bagRuleMap.values())
-      {
-         if (bag.containsGoldBag(bagRuleMap))
-            shinyGoldContainers++;
-      }
-      
-      System.out.println(shinyGoldContainers);
+      return shinyGoldBag.containedBagCount(bagRuleMap);
    }
 }

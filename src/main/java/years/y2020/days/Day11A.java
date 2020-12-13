@@ -1,4 +1,4 @@
-package days;
+package years.y2020.days;
 
 import map.*;
 import seating.*;
@@ -9,7 +9,8 @@ import java.io.*;
 
 public class Day11A
 {
-   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION + "input11.txt";
+   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION +
+      "years/y2020/input11.txt";
    
    
    public static void main(String[] args) throws IOException
@@ -25,9 +26,9 @@ public class Day11A
       
       seatLayout.applyRuleUntilStable(SeatAutomata::nextState, 1);
       
-      System.out.println();
-      System.out.println(seatLayout.toMapString(SeatAutomata::getVisualLetter));
-      System.out.println();
+      //System.out.println();
+      //System.out.println(seatLayout.toMapString(SeatAutomata::getVisualLetter));
+      //System.out.println();
       
       return seatLayout.count().get(SeatAutomata.TAKEN_SEAT);
    }

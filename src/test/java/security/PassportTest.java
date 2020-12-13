@@ -1,6 +1,6 @@
 package security;
 
-import days.*;
+import years.y2020.days.*;
 import org.junit.jupiter.api.*;
 import util.*;
 
@@ -47,18 +47,5 @@ class PassportTest
             "The following passport was considered invalid but it is supposed to be valid:\n%s",
             passport.toString()));
       }
-   }
-   
-   
-   @Test
-   void checkDay4() throws IOException
-   {
-      Assertions.assertEquals(260, Day4.countValids(Day4.INPUT_FILE_LOC));
-   }
-   
-   @Test
-   void checkDay4B() throws IOException
-   {
-      Assertions.assertEquals(153, Day4B.countValids(Day4B.INPUT_FILE_LOC));
    }
 }

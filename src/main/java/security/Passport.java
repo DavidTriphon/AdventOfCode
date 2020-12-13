@@ -48,11 +48,11 @@ public class Passport
    {
       ArrayList <Passport> passports = new ArrayList <>();
       
-      ReaderUtil.parsePrefixedFileWithMethod(fileLocation, "\n\n", (line) ->
+      ReaderUtil.parseFileWithMethod(fileLocation, "\n\n", (line) ->
          {
             Passport passport = new Passport();
             
-            String[] parts = line.split("( |\n)+");
+            String[] parts = line.split("([ \n])+");
             for (String entry : parts)
             {
                String[] keyValue = entry.split(":");

@@ -1,4 +1,4 @@
-package days;
+package years.y2020.days;
 
 import luggage.*;
 import util.*;
@@ -8,9 +8,10 @@ import java.util.*;
 import java.util.regex.*;
 
 
-public class Day7B
+public class Day07A
 {
-   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION + "input7.txt";
+   public static final String INPUT_FILE_LOC = ReaderUtil.RESOURCES_LOCATION +
+      "years/y2020/input7.txt";
    
    public static final String BAG_REGEX   = "([\\sa-z]+) bags?";
    public static final String COUNT_REGEX = "(\\d+) " + BAG_REGEX;
@@ -25,14 +26,19 @@ public class Day7B
    
    public static void main(String[] args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   public static int getAnswer() throws IOException
+   {
       Map <String, ColoredBag> bagRuleMap = ReaderUtil.parseFileToMap(
          INPUT_FILE_LOC, (line) ->
          {
             Matcher emptyMatcher = EMPTY_PATTERN.matcher(line);
             Matcher ruleMatcher = RULE_PATTERN.matcher(line);
-            
+         
             ColoredBag bag;
-            
+         
             if (emptyMatcher.matches())
             {
                String color = emptyMatcher.group(1);
@@ -42,16 +48,16 @@ public class Day7B
             {
                String color = ruleMatcher.group(1);
                bag = new ColoredBag(color);
-               
+            
                String[] innerBags = ruleMatcher.group(2).split(", ");
-               
+            
                for (String innerBag : innerBags)
                {
                   Matcher bagMatcher = COUNT_PATTERN.matcher(innerBag);
                   bagMatcher.matches();
                   int innerCount = Integer.parseInt(bagMatcher.group(1));
                   String innerColor = bagMatcher.group(2);
-                  
+               
                   bag.addBags(innerColor, innerCount);
                }
             }
@@ -59,14 +65,20 @@ public class Day7B
             {
                throw new IllegalStateException("Doesn't match either pattern.");
             }
-            
+         
             return bag;
          },
          ColoredBag::getColor
       );
-      
-      ColoredBag shinyGoldBag = bagRuleMap.get("shiny gold");
-      
-      System.out.println(shinyGoldBag.containedBagCount(bagRuleMap));
+   
+      int shinyGoldContainers = 0;
+   
+      for (ColoredBag bag : bagRuleMap.values())
+      {
+         if (bag.containsGoldBag(bagRuleMap))
+            shinyGoldContainers++;
+      }
+   
+      return shinyGoldContainers;
    }
 }

@@ -30,26 +30,11 @@ public class ReaderUtil
    public static void parseFileWithMethod(String fileLocation, Consumer <String> method)
       throws IOException
    {
-      parsePrefixedFileWithMethod(RESOURCES_LOCATION + fileLocation, method);
+      parseFileWithMethod(fileLocation, DEFAULT_DELIMITER, method);
    }
    
    
    public static void parseFileWithMethod(
-      String fileLocation, String delimiter, Consumer <String> method)
-      throws IOException
-   {
-      parsePrefixedFileWithMethod(RESOURCES_LOCATION + fileLocation, delimiter, method);
-   }
-   
-   
-   public static void parsePrefixedFileWithMethod(String fileLocation, Consumer <String> method)
-      throws IOException
-   {
-      parsePrefixedFileWithMethod(fileLocation, DEFAULT_DELIMITER, method);
-   }
-   
-   
-   public static void parsePrefixedFileWithMethod(
       String fileLocation, String delimiter, Consumer <String> method)
       throws IOException
    {
