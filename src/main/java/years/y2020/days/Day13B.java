@@ -50,10 +50,10 @@ public class Day13B
          {
             startTime += jumpPeriod;
          }
-         while ((startTime + offset) % (divisorDelay) != 0);
+         while ((startTime + offset) % divisorDelay != 0);
          
          if (jumpPeriod % divisorDelay != 0)
-            jumpPeriod = MathUtil.lcm(jumpPeriod, delay.getKey());
+            jumpPeriod = MathUtil.lcm(jumpPeriod, divisorDelay);
       }
       
       return startTime;
