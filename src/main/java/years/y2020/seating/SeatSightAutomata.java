@@ -1,5 +1,6 @@
 package years.y2020.seating;
 
+import automata.*;
 import map.*;
 
 import java.awt.*;
@@ -7,12 +8,12 @@ import java.util.List;
 import java.util.*;
 
 
-public enum SeatSightAutomata
+public enum SeatSightAutomata implements IAutoState <SeatSightAutomata>
 {
    EMPTY_SEAT('L', '=')
       {
          @Override
-         public SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
+         protected SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
          {
             if (!neighbors.containsKey(TAKEN_SEAT) || neighbors.get(TAKEN_SEAT) == 0)
                return TAKEN_SEAT;
@@ -23,7 +24,7 @@ public enum SeatSightAutomata
    TAKEN_SEAT('#', 'X')
       {
          @Override
-         public SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
+         protected SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
          {
             if (neighbors.containsKey(TAKEN_SEAT) && neighbors.get(TAKEN_SEAT) >= 5)
                return EMPTY_SEAT;
@@ -50,7 +51,14 @@ public enum SeatSightAutomata
    // instance methods
    
    
-   public SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
+   @Override
+   public SeatSightAutomata next(Point pos, GridMap <SeatSightAutomata, ?> map)
+   {
+      return next(map.countSeenFrom(pos, List.of(NO_SEAT), false));
+   }
+   
+   
+   protected SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
    {
       return this;
    }
@@ -77,12 +85,6 @@ public enum SeatSightAutomata
    }
    
    // static methods
-   
-   
-   public static SeatSightAutomata nextState(Point pos, GridMap <SeatSightAutomata, ?> gridMap)
-   {
-      return gridMap.get(pos).next(gridMap.countSeenFrom(pos, List.of(NO_SEAT), false));
-   }
    
    
    public static SeatSightAutomata getStateFromLetter(char letter)

@@ -1,5 +1,6 @@
 package years.y2020.days;
 
+import automata.*;
 import map.*;
 import util.*;
 import years.y2020.seating.*;
@@ -23,13 +24,13 @@ public class Day11B
    {
       FiniteGridMap <SeatSightAutomata> seatLayout = FiniteGridMap.fromString(
          ReaderUtil.getFileString(INPUT_FILE_LOC), SeatSightAutomata::getStateFromLetter);
-      
-      seatLayout.applyRuleUntilStable(SeatSightAutomata::nextState, 1);
-      
+   
+      seatLayout.applyRuleUntilStable(IAutoState::autoRule, 1);
+   
       //System.out.println();
       //System.out.println(seatLayout.toMapString(SeatSightAutomata::getVisualLetter));
       //System.out.println();
-      
+   
       return seatLayout.count().get(SeatSightAutomata.TAKEN_SEAT);
    }
 }

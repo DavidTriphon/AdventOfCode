@@ -1,17 +1,18 @@
 package years.y2020.seating;
 
+import automata.*;
 import map.*;
 
 import java.awt.*;
 import java.util.*;
 
 
-public enum SeatAutomata
+public enum SeatAutomata implements IAutoState <SeatAutomata>
 {
    EMPTY_SEAT('L', '=')
       {
          @Override
-         public SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
+         protected SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
          {
             if (!neighbors.containsKey(TAKEN_SEAT) || neighbors.get(TAKEN_SEAT) == 0)
                return TAKEN_SEAT;
@@ -22,7 +23,7 @@ public enum SeatAutomata
    TAKEN_SEAT('#', 'X')
       {
          @Override
-         public SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
+         protected SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
          {
             if (neighbors.containsKey(TAKEN_SEAT) && neighbors.get(TAKEN_SEAT) >= 4)
                return EMPTY_SEAT;
@@ -49,7 +50,14 @@ public enum SeatAutomata
    // instance methods
    
    
-   public SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
+   @Override
+   public SeatAutomata next(Point pos, GridMap <SeatAutomata, ?> map)
+   {
+      return next(map.countNeighborsOf(pos));
+   }
+   
+   
+   protected SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
    {
       return this;
    }
@@ -76,12 +84,6 @@ public enum SeatAutomata
    }
    
    // static methods
-   
-   
-   public static SeatAutomata nextState(Point pos, GridMap <SeatAutomata, ?> gridMap)
-   {
-      return gridMap.get(pos).next(gridMap.countNeighborsOf(pos));
-   }
    
    
    public static SeatAutomata getStateFromLetter(char letter)

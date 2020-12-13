@@ -29,6 +29,11 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    
    public abstract List <Point> listPositions();
    
+   // bounds do not represent the limits of valid positions
+   // they represent when to stop searching because all values outside are the same
+   // in some cases null for being outside space, in others infinitely a default value
+   
+   
    public abstract int getXLowerBound();
    
    public abstract int getXUpperBound();
@@ -37,6 +42,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    
    public abstract int getYUpperBound();
    
+   // this should perform a deep copy to be used by the automata ruleset iteration methods
    public abstract M copy();
    
    // implemented methods that apply the same to all subclasses
@@ -182,6 +188,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    // private methods
    
    
+   // for use by toMapString only
    private void mapStringHelperX(
       int y, StringBuilder sb, int minX, int maxX, Function <T, Character> translator)
    {
