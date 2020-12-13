@@ -170,4 +170,18 @@ class Days2020Tests
    {
       assertEquals(71504, Day12B.getAnswer());
    }
+   
+   
+   @Test
+   void day13A() throws IOException
+   {
+      assertEquals(333, Day13A.getAnswer());
+   }
+   
+   
+   @Test
+   void day13B() throws IOException
+   {
+      assertEquals(690123192779524L, Day13B.getAnswer());
+   }
 }
