@@ -1,12 +1,12 @@
-package luggage;
+package main.years.y2020.luggage;
 
 import java.util.*;
 
 
 public class ColoredBag
 {
-   private String                    _color;
-   private HashMap <String, Integer> _innerBags = new HashMap <>();
+   private final String                    _color;
+   private final HashMap <String, Integer> _innerBags = new HashMap <>();
    
    
    public ColoredBag(String color)

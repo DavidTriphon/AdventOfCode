@@ -1,7 +1,8 @@
-package jolt;
+package test.years.y2020.jolt;
 
+import main.util.*;
+import main.years.y2020.jolt.*;
 import org.junit.jupiter.api.*;
-import util.*;
 
 import java.io.*;
 import java.util.*;
@@ -10,9 +11,9 @@ import java.util.*;
 class AdapterChainTest
 {
    public static final String INPUT_FILE_LOC_1 =
-      ReaderUtil.TEST_RESOURCES_LOCATION + "jolt/input10T1.txt";
+      ReaderUtil.TEST_RESOURCES_LOCATION + "years/y2020/jolt/input10T1.txt";
    public static final String INPUT_FILE_LOC_2 =
-      ReaderUtil.TEST_RESOURCES_LOCATION + "jolt/input10T2.txt";
+      ReaderUtil.TEST_RESOURCES_LOCATION + "years/y2020/jolt/input10T2.txt";
    
    
    @Test

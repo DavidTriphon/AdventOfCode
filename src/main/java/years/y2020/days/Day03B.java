@@ -1,7 +1,7 @@
-package years.y2020.days;
+package main.years.y2020.days;
 
-import map.*;
-import util.*;
+import main.map.*;
+import main.util.*;
 
 import java.awt.*;
 import java.io.*;

@@ -1,4 +1,4 @@
-package map;
+package main.map;
 
 import java.awt.*;
 import java.util.List;
@@ -12,7 +12,7 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    
    private T _defaultValue;
    
-   private HashMap <Point, T> _map;
+   private final HashMap <Point, T> _map;
    
    private boolean _dirtyBoundsFlag = true;
    

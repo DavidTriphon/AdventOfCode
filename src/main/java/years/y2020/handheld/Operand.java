@@ -1,8 +1,8 @@
-package handheld;
+package main.years.y2020.handheld;
 
 public class Operand
 {
-   private int _value;
+   private final int _value;
    
    
    public Operand(int value)

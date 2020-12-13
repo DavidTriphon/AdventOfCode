@@ -1,4 +1,4 @@
-package boarding;
+package main.years.y2020.boarding;
 
 public class BoardingPass
 {

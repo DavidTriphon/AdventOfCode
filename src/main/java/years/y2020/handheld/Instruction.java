@@ -1,17 +1,17 @@
-package handheld;
+package main.years.y2020.handheld;
 
 import java.util.*;
 
 
 public class Instruction
 {
-   private OpCode         _opCode;
-   private List <Operand> _operands;
+   private final List <Operand> _operands;
+   private       OpCode         _opCode;
    
    
    public Instruction(OpCode opCode, List <Operand> operands)
    {
-      _opCode = opCode;
+      _opCode   = opCode;
       _operands = operands;
    }
    

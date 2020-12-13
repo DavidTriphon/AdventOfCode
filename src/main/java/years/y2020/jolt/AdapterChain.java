@@ -1,4 +1,4 @@
-package jolt;
+package main.years.y2020.jolt;
 
 import java.util.*;
 
@@ -43,9 +43,9 @@ public class AdapterChain
       adapterRatings.sort(Comparator.naturalOrder());
       
       long combinations = 1; // start at 1 to multiply by
-      
+   
       int startIndex = 0;
-      int endIndex = 0;
+      int endIndex;
       
       long currentJoltage = 0;
       

@@ -1,18 +1,17 @@
-package seating;
+package main.years.y2020.seating;
 
-import map.*;
+import main.map.*;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 
-public enum SeatSightAutomata
+public enum SeatAutomata
 {
    EMPTY_SEAT('L', '=')
       {
          @Override
-         public SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
+         public SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
          {
             if (!neighbors.containsKey(TAKEN_SEAT) || neighbors.get(TAKEN_SEAT) == 0)
                return TAKEN_SEAT;
@@ -23,9 +22,9 @@ public enum SeatSightAutomata
    TAKEN_SEAT('#', 'X')
       {
          @Override
-         public SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
+         public SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
          {
-            if (neighbors.containsKey(TAKEN_SEAT) && neighbors.get(TAKEN_SEAT) >= 5)
+            if (neighbors.containsKey(TAKEN_SEAT) && neighbors.get(TAKEN_SEAT) >= 4)
                return EMPTY_SEAT;
             else
                return this;
@@ -41,7 +40,7 @@ public enum SeatSightAutomata
    // constructor
    
    
-   SeatSightAutomata(char inputLetter, char visualLetter)
+   SeatAutomata(char inputLetter, char visualLetter)
    {
       _inputLetter  = inputLetter;
       _visualLetter = visualLetter;
@@ -50,7 +49,7 @@ public enum SeatSightAutomata
    // instance methods
    
    
-   public SeatSightAutomata next(Map <SeatSightAutomata, Integer> neighbors)
+   public SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
    {
       return this;
    }
@@ -79,15 +78,15 @@ public enum SeatSightAutomata
    // static methods
    
    
-   public static SeatSightAutomata nextState(Point pos, GridMap <SeatSightAutomata, ?> gridMap)
+   public static SeatAutomata nextState(Point pos, GridMap <SeatAutomata, ?> gridMap)
    {
-      return gridMap.get(pos).next(gridMap.countSeenFrom(pos, List.of(NO_SEAT), false));
+      return gridMap.get(pos).next(gridMap.countNeighborsOf(pos));
    }
    
    
-   public static SeatSightAutomata getStateFromLetter(char letter)
+   public static SeatAutomata getStateFromLetter(char letter)
    {
-      for (SeatSightAutomata state : values())
+      for (SeatAutomata state : values())
       {
          if (state._inputLetter == letter)
             return state;

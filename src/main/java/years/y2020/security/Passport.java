@@ -1,6 +1,6 @@
-package security;
+package main.years.y2020.security;
 
-import util.*;
+import main.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -41,7 +41,7 @@ public class Passport
       FIELD_EYE_COLOR, FIELD_PASSPORT_ID
    );
    
-   private HashMap <String, String> _fields = new HashMap <>();
+   private final HashMap <String, String> _fields = new HashMap <>();
    
    
    public static List <Passport> getPassportsFromInput(String fileLocation) throws IOException
@@ -123,10 +123,10 @@ public class Passport
    
    public static class Field
    {
-      public final String  name;
-      private      Pattern _pattern;
+      public final  String  name;
+      private final Pattern _pattern;
       
-      private Function <Matcher, Boolean> _valueChecker;
+      private final Function <Matcher, Boolean> _valueChecker;
       
       
       public Field(String name, String regex)

@@ -1,6 +1,6 @@
-package years.y2020.days;
+package main.years.y2020.days;
 
-import util.*;
+import main.util.*;
 
 import java.io.*;
 import java.util.concurrent.atomic.*;

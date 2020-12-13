@@ -1,8 +1,8 @@
-package security;
+package test.years.y2020.security;
 
-import years.y2020.days.*;
+import main.util.*;
+import main.years.y2020.security.*;
 import org.junit.jupiter.api.*;
-import util.*;
 
 import java.io.*;
 import java.util.*;
@@ -11,9 +11,9 @@ import java.util.*;
 class PassportTest
 {
    public static final String INVALID_LOC =
-      ReaderUtil.TEST_RESOURCES_LOCATION + "security/invalid.txt";
+      ReaderUtil.TEST_RESOURCES_LOCATION + "years/y2020/security/invalid.txt";
    public static final String VALID_LOC   =
-      ReaderUtil.TEST_RESOURCES_LOCATION + "security/valid.txt";
+      ReaderUtil.TEST_RESOURCES_LOCATION + "years/y2020/security/valid.txt";
    
    
    @Test

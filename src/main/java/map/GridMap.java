@@ -1,4 +1,4 @@
-package map;
+package main.map;
 
 import java.awt.*;
 import java.util.List;

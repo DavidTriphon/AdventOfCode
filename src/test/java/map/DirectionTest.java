@@ -1,5 +1,6 @@
-package map;
+package test.map;
 
+import main.map.*;
 import org.junit.jupiter.api.*;
 
 import java.awt.*;

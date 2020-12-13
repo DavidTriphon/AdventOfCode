@@ -1,7 +1,7 @@
-package years.y2020.days;
+package main.years.y2020.days;
 
-import handheld.*;
-import util.*;
+import main.util.*;
+import main.years.y2020.handheld.*;
 
 import java.io.*;
 

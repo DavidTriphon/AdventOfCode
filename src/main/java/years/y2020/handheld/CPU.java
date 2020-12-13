@@ -1,11 +1,11 @@
-package handheld;
+package main.years.y2020.handheld;
 
 import java.util.*;
 
 
 public class CPU
 {
-   private List <Instruction> _program;
+   private final List <Instruction> _program;
    
    private CPUMemory _memory = new CPUMemory();
    

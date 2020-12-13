@@ -1,7 +1,8 @@
-package xmas;
+package test.years.y2020.xmas;
 
+import main.util.*;
+import main.years.y2020.xmas.*;
 import org.junit.jupiter.api.*;
-import util.*;
 
 import java.io.*;
 import java.util.*;
@@ -10,7 +11,7 @@ import java.util.*;
 class XMASTest
 {
    public static final String INPUT_FILE_LOC = ReaderUtil.TEST_RESOURCES_LOCATION +
-      "xmas/input9T.txt";
+      "years/y2020/xmas/input9T.txt";
    
    
    @Test

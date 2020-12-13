@@ -1,7 +1,7 @@
-package years.y2020.days;
+package main.years.y2020.days;
 
-import luggage.*;
-import util.*;
+import main.util.*;
+import main.years.y2020.luggage.*;
 
 import java.io.*;
 import java.util.*;
@@ -54,6 +54,7 @@ public class Day07B
                for (String innerBag : innerBags)
                {
                   Matcher bagMatcher = COUNT_PATTERN.matcher(innerBag);
+                  //noinspection ResultOfMethodCallIgnored
                   bagMatcher.matches();
                   int innerCount = Integer.parseInt(bagMatcher.group(1));
                   String innerColor = bagMatcher.group(2);
