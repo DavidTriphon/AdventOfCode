@@ -21,7 +21,7 @@ public class ReaderUtil
    public static String getFileString(String fileLocation) throws IOException
    {
       return Files.readString(
-         Path.of(RESOURCES_LOCATION + fileLocation), StandardCharsets.US_ASCII).trim();
+         Path.of(fileLocation), StandardCharsets.US_ASCII).trim();
    }
    
    /// CONSUMER PARSER
@@ -103,6 +103,7 @@ public class ReaderUtil
    {
       return parseFileToMap(fileLocation, DEFAULT_DELIMITER, translator, keyMaker);
    }
+   
    
    public static <K, V> HashMap <K, V> parseFileToMap(
       String fileLocation, String delimiter, Function <String, V> translator,
