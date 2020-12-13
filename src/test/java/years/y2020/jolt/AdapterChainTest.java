@@ -1,8 +1,7 @@
-package test.years.y2020.jolt;
+package years.y2020.jolt;
 
-import main.util.*;
-import main.years.y2020.jolt.*;
 import org.junit.jupiter.api.*;
+import util.*;
 
 import java.io.*;
 import java.util.*;

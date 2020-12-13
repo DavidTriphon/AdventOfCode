@@ -1,8 +1,7 @@
-package test.years.y2020.security;
+package years.y2020.security;
 
-import main.util.*;
-import main.years.y2020.security.*;
 import org.junit.jupiter.api.*;
+import util.*;
 
 import java.io.*;
 import java.util.*;

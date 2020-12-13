@@ -1,6 +1,5 @@
-package test.years.y2020.days;
+package years.y2020.days;
 
-import main.years.y2020.days.*;
 import org.junit.jupiter.api.*;
 
 import java.io.*;

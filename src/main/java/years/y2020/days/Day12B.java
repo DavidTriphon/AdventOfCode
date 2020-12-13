@@ -1,6 +1,6 @@
-package main.years.y2020.days;
+package years.y2020.days;
 
-import main.util.*;
+import util.*;
 
 import java.awt.*;
 import java.io.*;

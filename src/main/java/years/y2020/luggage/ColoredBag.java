@@ -1,4 +1,4 @@
-package main.years.y2020.luggage;
+package years.y2020.luggage;
 
 import java.util.*;
 

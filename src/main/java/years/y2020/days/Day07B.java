@@ -1,7 +1,7 @@
-package main.years.y2020.days;
+package years.y2020.days;
 
-import main.util.*;
-import main.years.y2020.luggage.*;
+import util.*;
+import years.y2020.luggage.*;
 
 import java.io.*;
 import java.util.*;

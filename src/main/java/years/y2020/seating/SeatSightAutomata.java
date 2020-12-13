@@ -1,6 +1,6 @@
-package main.years.y2020.seating;
+package years.y2020.seating;
 
-import main.map.*;
+import map.*;
 
 import java.awt.*;
 import java.util.List;

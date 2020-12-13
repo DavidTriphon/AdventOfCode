@@ -1,9 +1,8 @@
-package test.years.y2020.seating;
+package years.y2020.seating;
 
-import main.map.*;
-import main.util.*;
-import main.years.y2020.seating.*;
+import map.*;
 import org.junit.jupiter.api.*;
+import util.*;
 
 import java.io.*;
 

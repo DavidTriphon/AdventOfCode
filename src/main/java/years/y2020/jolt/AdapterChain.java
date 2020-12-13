@@ -1,4 +1,4 @@
-package main.years.y2020.jolt;
+package years.y2020.jolt;
 
 import java.util.*;
 

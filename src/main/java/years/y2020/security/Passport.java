@@ -1,6 +1,6 @@
-package main.years.y2020.security;
+package years.y2020.security;
 
-import main.util.*;
+import util.*;
 
 import java.io.*;
 import java.util.*;
