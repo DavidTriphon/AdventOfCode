@@ -10,8 +10,8 @@ import java.util.regex.*;
 
 public class ReaderUtil
 {
-   public static String RESOURCES_LOCATION      = "src/main/resources/";
-   public static String TEST_RESOURCES_LOCATION = "src/test/resources/";
+   public static String RESOURCES_LOCATION      = "src/main/resources/years/";
+   public static String TEST_RESOURCES_LOCATION = "src/test/resources/years/";
    
    public static String DEFAULT_DELIMITER = "\n";
    
