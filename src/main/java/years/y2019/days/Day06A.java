@@ -6,13 +6,19 @@ import java.io.*;
 import java.util.*;
 
 
-public class Day6
+public class Day06A
 {
    private static final String inputFileLoc =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input6.txt";
    
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
    {
       BufferedReader inputReader = new BufferedReader(new FileReader(inputFileLoc));
       
@@ -35,7 +41,7 @@ public class Day6
          totalLevels += getLevel(solarMap, levels, body);
       }
       
-      System.out.println(totalLevels);
+      return totalLevels;
    }
    
    

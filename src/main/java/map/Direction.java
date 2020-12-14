@@ -118,4 +118,10 @@ public enum Direction
       move(ret, mag);
       return ret;
    }
+   
+   
+   public static Direction[] compassValues()
+   {
+      return new Direction[] {UP, RIGHT, LEFT, DOWN};
+   }
 }

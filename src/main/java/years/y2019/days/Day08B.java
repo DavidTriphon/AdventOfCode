@@ -8,7 +8,7 @@ import java.nio.file.*;
 import java.util.*;
 
 
-public class Day8
+public class Day08B
 {
    private static final String INPUT_FILE_LOC =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input8.txt";
@@ -16,40 +16,57 @@ public class Day8
    private static final int IMAGE_HEIGHT = 6;
    private static final int IMAGE_WIDTH  = 25;
    
+   private static final char PIXEL_BLACK       = '0';
+   private static final char PIXEL_WHITE       = '1';
+   private static final char PIXEL_TRANSPARENT = '2';
+   
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static String getAnswer() throws IOException
    {
       String fileString =
          Files.readString(Path.of(INPUT_FILE_LOC), StandardCharsets.US_ASCII).trim();
       
       ArrayList <String> layers = getLayersFromImage(fileString);
       
-      String chosenLayer = getLayerWithLeastZeroes(layers);
-      
-      int onesCount = getOccurenceOfDigit(chosenLayer, '1');
-      int twosCount = getOccurenceOfDigit(chosenLayer, '2');
-      
-      System.out.println(onesCount * twosCount);
+      return composeImageFromLayers(layers);
    }
    
    
-   private static String getLayerWithLeastZeroes(ArrayList <String> layers)
+   private static String composeImageFromLayers(ArrayList <String> layers)
    {
-      String chosenLayer = null;
-      int minZeroCount = Integer.MAX_VALUE;
+      String image = "";
       
-      for (String layerString : layers)
+      for (int y = 0; y < IMAGE_HEIGHT; y++)
       {
-         int zeroCount = getOccurenceOfDigit(layerString, '0');
-         
-         if (zeroCount < minZeroCount)
+         for (int x = 0; x < IMAGE_WIDTH; x++)
          {
-            minZeroCount = zeroCount;
-            chosenLayer  = layerString;
+            int layerI = 0;
+            
+            char currentChar;
+            do
+            {
+               currentChar = layers.get(layerI++).charAt(y * IMAGE_WIDTH + x);
+            }
+            while (currentChar == PIXEL_TRANSPARENT);
+            
+            if (currentChar == PIXEL_WHITE)
+               currentChar = 'X';
+            else
+               currentChar = ' ';
+            
+            image += currentChar;
          }
+         
+         image += '\n';
       }
       
-      return chosenLayer;
+      return image;
    }
    
    
@@ -67,19 +84,5 @@ public class Day8
       }
       
       return layers;
-   }
-   
-   
-   private static int getOccurenceOfDigit(String layerString, char digit)
-   {
-      int count = 0;
-      
-      for (int i = 0; i < layerString.length(); i++)
-      {
-         if (layerString.charAt(i) == digit)
-            count++;
-      }
-      
-      return count;
    }
 }

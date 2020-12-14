@@ -9,16 +9,23 @@ import java.nio.file.*;
 import java.util.*;
 
 
-public class Day7
+public class Day07B
 {
    private static final String INPUT_FILE_LOC =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input7.txt";
    
-   private static final int PHASE_MIN = 0;
-   private static final int PHASE_MAX = 4;
+   private static final int PHASE_MIN = 5;
+   private static final int PHASE_MAX = 9;
+   private static final int PHASE_CNT = PHASE_MAX - PHASE_MIN + 1;
    
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
    {
       String fileString =
          Files.readString(Path.of(INPUT_FILE_LOC), StandardCharsets.US_ASCII).trim();
@@ -31,26 +38,35 @@ public class Day7
       
       generatePhaseCombos(phaseCombinations, new ArrayList <>());
       
-      Program program = new Program();
-      
       ArrayList <Long> bestPhaseCombo = null;
       long highestOutput = 0;
       
       for (ArrayList <Long> phaseCombo : phaseCombinations)
       {
-         long currentSignalStrength = 0;
+         ArrayList <Program> programs = new ArrayList <>();
          
          for (long phase : phaseCombo)
          {
-            Long[] inputs = new Long[2];
-            inputs[0] = phase;
-            inputs[1] = currentSignalStrength;
+            Long[] inputs = new Long[] {phase};
+            Program program = new Program();
+            programs.add(program);
             
             program.setMemory(opCodes);
             program.setInput(inputs);
             program.compute();
-            Long[] output = program.getOutput();
-            currentSignalStrength = output[output.length - 1];
+         }
+         
+         long currentSignalStrength = 0;
+         
+         while (!programs.get(0).isHalted())
+         {
+            for (Program program : programs)
+            {
+               program.setInput(new Long[] {currentSignalStrength});
+               program.compute();
+               Long[] output = program.getOutput();
+               currentSignalStrength = output[output.length - 1];
+            }
          }
          
          if (currentSignalStrength > highestOutput)
@@ -62,6 +78,8 @@ public class Day7
       
       System.out.println(bestPhaseCombo);
       System.out.println(highestOutput);
+      
+      return highestOutput;
    }
    
    
@@ -69,7 +87,7 @@ public class Day7
       ArrayList <ArrayList <Long>> phaseCombinations,
       ArrayList <Long> currentCombination)
    {
-      if (currentCombination.size() > PHASE_MAX - PHASE_MIN)
+      if (currentCombination.size() == PHASE_CNT)
       {
          phaseCombinations.add(new ArrayList <>(currentCombination));
       }

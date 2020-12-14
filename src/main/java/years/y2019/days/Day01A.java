@@ -5,13 +5,19 @@ import util.*;
 import java.io.*;
 
 
-public class Day1
+public class Day01A
 {
    private static final String inputFileLoc =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input1.txt";
    
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
    {
       BufferedReader inputReader = new BufferedReader(new FileReader(inputFileLoc));
       
@@ -26,6 +32,6 @@ public class Day1
          totalFuel += (num / 3) - 2;
       }
       
-      System.out.println(totalFuel);
+      return totalFuel;
    }
 }

@@ -31,6 +31,6 @@ public class Day11B
       //System.out.println(seatLayout.toMapString(SeatSightAutomata::getVisualLetter));
       //System.out.println();
    
-      return seatLayout.count().get(SeatSightAutomata.TAKEN_SEAT);
+      return seatLayout.countOf(SeatSightAutomata.TAKEN_SEAT);
    }
 }

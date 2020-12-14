@@ -17,6 +17,12 @@ public class Day11B
    
    public static void main(String... args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static String getAnswer() throws IOException
+   {
       Long[] opCodes = Program.getMemoryFromFile(INPUT_FILE_LOC);
       
       Program program = new Program();
@@ -29,7 +35,7 @@ public class Day11B
       
       robot.run();
       
-      System.out.println(map.toMapString(
+      return map.toMapString(
          (i) -> {
             switch (i)
             {
@@ -46,6 +52,6 @@ public class Day11B
                   return '.';
             }
          }
-      ));
+      );
    }
 }

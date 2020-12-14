@@ -9,11 +9,17 @@ public class Day15B
 {
    public static void main(String... args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
+   {
       RepairDroid droid = new RepairDroid();
       
       droid.autoExploreMap();
       
       System.out.println(droid.getFormattedMap());
-      System.out.println(droid.timeToOxygenation());
+      return droid.timeToOxygenation();
    }
 }

@@ -71,7 +71,7 @@ public class VacuumRobot
    
    public int getCrossingsCount()
    {
-      return _map.count().get(TILE_CROSS);
+      return _map.countOf(TILE_CROSS);
    }
    
    
@@ -112,14 +112,14 @@ public class VacuumRobot
             if (_map.get(pos) != TILE_SPACE)
             {
                boolean isCross = true;
-               
-               for (Direction dir : Direction.values())
+   
+               for (Direction dir : Direction.compassValues())
                {
                   Point offset = dir.offset(pos);
                   if (_map.get(offset) == TILE_SPACE)
                      isCross = false;
                }
-               
+   
                if (isCross)
                   _map.set(pos, TILE_CROSS);
             }

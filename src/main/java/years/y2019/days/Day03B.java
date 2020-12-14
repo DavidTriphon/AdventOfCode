@@ -8,7 +8,7 @@ import java.nio.file.*;
 import java.util.*;
 
 
-public class Day3B
+public class Day03B
 {
    private static final String INPUT_FILE_LOC =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input3.txt";
@@ -20,6 +20,12 @@ public class Day3B
    
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
    {
       String fileString =
          Files.readString(Path.of(INPUT_FILE_LOC), StandardCharsets.US_ASCII).trim();
@@ -98,6 +104,6 @@ public class Day3B
          }
       }
       
-      System.out.println(distance);
+      return distance;
    }
 }

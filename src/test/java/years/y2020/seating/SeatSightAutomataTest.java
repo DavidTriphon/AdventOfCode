@@ -24,6 +24,6 @@ class SeatSightAutomataTest
       
       seatLayout.applyRuleUntilStable(IAutoState::autoRule, 1);
       
-      assertEquals(26, seatLayout.count().get(SeatSightAutomata.TAKEN_SEAT));
+      assertEquals(26, seatLayout.countOf(SeatSightAutomata.TAKEN_SEAT));
    }
 }

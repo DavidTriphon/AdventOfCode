@@ -6,7 +6,7 @@ import years.y2019.nbody.*;
 import java.io.*;
 
 
-public class Day12
+public class Day12A
 {
    private static final String INPUT_FILE_LOC =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input12.txt";
@@ -16,12 +16,18 @@ public class Day12
    
    public static void main(String... args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
+   {
       String fileString = ReaderUtil.getFileString(INPUT_FILE_LOC);
       
       NBody nBody = NBody.fromString(fileString);
       
       nBody.timeStep(STEP_COUNT);
       
-      System.out.println(nBody.getEnergy());
+      return nBody.getEnergy();
    }
 }

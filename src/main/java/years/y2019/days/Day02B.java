@@ -9,7 +9,7 @@ import java.nio.file.*;
 import java.util.*;
 
 
-public class Day2B
+public class Day02B
 {
    private static final String INPUT_FILE_LOC =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input2.txt";
@@ -24,6 +24,12 @@ public class Day2B
    
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static int getAnswer() throws IOException
    {
       String fileString =
          Files.readString(Path.of(INPUT_FILE_LOC), StandardCharsets.US_ASCII).trim();
@@ -60,5 +66,7 @@ public class Day2B
       }
       
       System.out.printf("Noun: %d, Verb: %d", noun, verb);
+      
+      return 100 * noun + verb;
    }
 }

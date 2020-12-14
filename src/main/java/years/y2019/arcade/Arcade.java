@@ -125,7 +125,7 @@ public class Arcade
    
    public boolean isWon()
    {
-      return _screen.count().get(TILE_BLOCK) == 0;
+      return _screen.countOf(TILE_BLOCK) == 0;
    }
    
    

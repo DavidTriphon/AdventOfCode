@@ -67,8 +67,14 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
          else
             counts.put(obj, counts.get(obj) + 1);
       }
-      
+   
       return counts;
+   }
+   
+   
+   public int countOf(T obj)
+   {
+      return (int) listPositions().stream().filter(pos -> obj.equals(get(pos))).count();
    }
    
    

@@ -17,6 +17,12 @@ public class Day13B
    
    public static void main(String... args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
+   {
       Arcade arcade = new Arcade();
       
       arcade.hackQuarters();
@@ -28,6 +34,8 @@ public class Day13B
       
       System.out.println(arcade.getScreenString());
       System.out.println("Score: " + arcade.getCurrentScore());
+      
+      return arcade.getCurrentScore();
    }
    
    

@@ -181,14 +181,21 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
          if (!get(pos).equals(that.get(pos)))
             return false;
       }
-      
+   
       for (Point pos : that.listPositions())
       {
          if (!get(pos).equals(that.get(pos)))
             return false;
       }
-      
+   
       return true;
+   }
+   
+   
+   @Override
+   public String toString()
+   {
+      return "InfiniteGridMap{\n" + toMapString((o) -> o.toString().charAt(0)) + "}";
    }
    
    // instance methods

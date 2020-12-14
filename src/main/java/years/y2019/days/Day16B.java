@@ -18,6 +18,12 @@ public class Day16B
    
    public static void main(String... args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
+   {
       String signalString = ReaderUtil.getFileString(INPUT_FILE_LOC);
       
       int[] digits = FFT.getDigitsFromString(signalString);
@@ -26,6 +32,6 @@ public class Day16B
       int[] result =
          FFT.processWithLargeOffset(digits, SIGNAL_REPEAT_COUNT, offset, PHASE_COUNT, 8);
       
-      System.out.println(FFT.stringifyDigits(result));
+      return Long.parseLong(FFT.stringifyDigits(result).substring(0, 8));
    }
 }

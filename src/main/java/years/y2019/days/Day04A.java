@@ -1,14 +1,20 @@
 package years.y2019.days;
 
-public class Day4
+public class Day04A
 {
    private static final int LOWER_PASSWORD = 130254;
-   private static final int UPPER_PASSWORD = 678276;
+   private static final int UPPER_PASSWORD = 678275;
    
    private static final int DIGIT_COUNT = 6;
    
    
    public static void main(String... args)
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer()
    {
       int validPasswordCount = 0;
       
@@ -32,7 +38,7 @@ public class Day4
             validPasswordCount++;
       }
       
-      System.out.println(validPasswordCount);
+      return validPasswordCount;
    }
    
    

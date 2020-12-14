@@ -16,9 +16,15 @@ public class Day14B
    
    public static void main(String... args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
+   {
       NanoFactory fact = new NanoFactory(
          ReaderUtil.parseFileToList(INPUT_FILE_LOC, Recipe::fromString));
       
-      System.out.println(fact.getMaxFuelFromOre(MINED_ORE));
+      return fact.getMaxFuelFromOre(MINED_ORE);
    }
 }

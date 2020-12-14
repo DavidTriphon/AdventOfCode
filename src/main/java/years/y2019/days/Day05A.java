@@ -9,13 +9,19 @@ import java.nio.file.*;
 import java.util.*;
 
 
-public class Day5
+public class Day05A
 {
    private static final String INPUT_FILE_LOC =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input5.txt";
    
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
    {
       String fileString =
          Files.readString(Path.of(INPUT_FILE_LOC), StandardCharsets.US_ASCII).trim();
@@ -31,5 +37,7 @@ public class Day5
       program.compute();
       
       System.out.println(Arrays.asList(program.getOutput()));
+      
+      return program.getOutput()[program.getOutput().length - 1];
    }
 }

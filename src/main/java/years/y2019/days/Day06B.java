@@ -7,13 +7,19 @@ import java.io.*;
 import java.util.*;
 
 
-public class Day6B
+public class Day06B
 {
    private static final String inputFileLoc =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input6.txt";
    
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
    {
       BufferedReader inputReader = new BufferedReader(new FileReader(inputFileLoc));
       
@@ -30,6 +36,6 @@ public class Day6B
       
       SolarMap map = new SolarMap(orbitMap);
       
-      System.out.println(map.getDistanceBetween("YOU", "SAN") - 2);
+      return map.getDistanceBetween("YOU", "SAN") - 2;
    }
 }

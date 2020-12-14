@@ -8,13 +8,19 @@ import years.y2019.paint.*;
 import java.io.*;
 
 
-public class Day11
+public class Day11A
 {
    private static final String INPUT_FILE_LOC =
       ReaderUtil.RESOURCES_LOCATION + "years/y2019/input11.txt";
    
    
    public static void main(String... args) throws IOException
+   {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
    {
       Long[] opCodes = Program.getMemoryFromFile(INPUT_FILE_LOC);
       
@@ -27,11 +33,9 @@ public class Day11
       
       robot.run();
       
-      long black = map.count().get(EmergencyPaintingRobot.PAINT_BLACK);
-      long white = map.count().get(EmergencyPaintingRobot.PAINT_WHITE);
+      long black = map.countOf(EmergencyPaintingRobot.PAINT_BLACK);
+      long white = map.countOf(EmergencyPaintingRobot.PAINT_WHITE);
       
-      long paintUsed = black + white;
-      
-      System.out.println(paintUsed);
+      return black + white;
    }
 }

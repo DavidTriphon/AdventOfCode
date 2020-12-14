@@ -14,10 +14,16 @@ public class Day12B
    
    public static void main(String... args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
+   {
       String fileString = ReaderUtil.getFileString(INPUT_FILE_LOC);
       
       NBody nBody = NBody.fromString(fileString);
       
-      System.out.print(nBody.getLoopTime());
+      return nBody.getLoopTime();
    }
 }

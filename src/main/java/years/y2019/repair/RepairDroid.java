@@ -149,29 +149,31 @@ public class RepairDroid
       
       int time = 0;
       
-      while (current.count().get(TILE_PATH) + current.count().get(TILE_DEAD_END) > 0)
+      while (current.countOf(TILE_PATH) + current.countOf(TILE_DEAD_END) > 0)
       {
          InfiniteGridMap <Integer> next = current.copy();
-         
+   
          for (Point pos : current.listPositions())
          {
             if (current.get(pos) == TILE_OXYGEN)
             {
-               for (Direction dir : Direction.values())
+               for (Direction dir : Direction.compassValues())
                {
                   Point nextToPos = new Point(pos);
                   dir.move(nextToPos);
-                  
-                  int nextDoor = next.get(nextToPos);
-                  
+            
+                  int nextDoor = current.get(nextToPos);
+            
                   if (nextDoor == TILE_PATH || nextDoor == TILE_DEAD_END)
                      next.set(nextToPos, TILE_OXYGEN);
                }
             }
          }
-         
+   
+         System.out.println(next.toMapStringS(TRANSLATOR));
+   
          current = next;
-         
+   
          time++;
       }
       
@@ -181,7 +183,6 @@ public class RepairDroid
    
    public int move(Direction moveDir)
    {
-      
       _program.setInput(new Long[] {DIR_MAP.get(moveDir)});
       _program.compute();
       

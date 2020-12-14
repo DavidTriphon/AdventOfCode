@@ -17,6 +17,12 @@ public class Day10B
    
    public static void main(String... args) throws IOException
    {
+      System.out.println(getAnswer());
+   }
+   
+   
+   public static long getAnswer() throws IOException
+   {
       String fileString =
          Files.readString(Path.of(INPUT_FILE_LOC), StandardCharsets.US_ASCII).trim();
       
@@ -30,6 +36,11 @@ public class Day10B
       {
          Map.Entry <Integer, Integer> pos = map.removeNextAsteroid();
          System.out.printf("%03d: (%d, %d)\n", count++, pos.getKey(), pos.getValue());
+         
+         if (count == 201)
+            return pos.getKey() * 100 + pos.getValue();
       }
+      
+      throw new IllegalStateException("not enough asteroids. count=" + (count - 1));
    }
 }
