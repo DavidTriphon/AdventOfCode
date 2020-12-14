@@ -17,6 +17,7 @@ public class Day08B
       System.out.println(getAnswer());
    }
    
+   
    public static int getAnswer() throws IOException
    {
       CPU cpu = new CPU(ReaderUtil.parseFileToList(INPUT_FILE_LOC, Instruction::fromString));

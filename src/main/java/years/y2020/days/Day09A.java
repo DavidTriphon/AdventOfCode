@@ -18,6 +18,7 @@ public class Day09A
       System.out.println(getAnswer());
    }
    
+   
    public static long getAnswer() throws IOException
    {
       List <Long> numbers = ReaderUtil.parseFileToList(INPUT_FILE_LOC, Long::parseLong);

@@ -29,6 +29,7 @@ public class Day07A
       System.out.println(getAnswer());
    }
    
+   
    public static int getAnswer() throws IOException
    {
       Map <String, ColoredBag> bagRuleMap = ReaderUtil.parseFileToMap(
@@ -36,9 +37,9 @@ public class Day07A
          {
             Matcher emptyMatcher = EMPTY_PATTERN.matcher(line);
             Matcher ruleMatcher = RULE_PATTERN.matcher(line);
-         
+   
             ColoredBag bag;
-         
+   
             if (emptyMatcher.matches())
             {
                String color = emptyMatcher.group(1);
@@ -48,9 +49,9 @@ public class Day07A
             {
                String color = ruleMatcher.group(1);
                bag = new ColoredBag(color);
-            
+   
                String[] innerBags = ruleMatcher.group(2).split(", ");
-            
+   
                for (String innerBag : innerBags)
                {
                   Matcher bagMatcher = COUNT_PATTERN.matcher(innerBag);
@@ -58,7 +59,7 @@ public class Day07A
                   bagMatcher.matches();
                   int innerCount = Integer.parseInt(bagMatcher.group(1));
                   String innerColor = bagMatcher.group(2);
-               
+   
                   bag.addBags(innerColor, innerCount);
                }
             }
@@ -66,7 +67,7 @@ public class Day07A
             {
                throw new IllegalStateException("Doesn't match either pattern.");
             }
-         
+   
             return bag;
          },
          ColoredBag::getColor

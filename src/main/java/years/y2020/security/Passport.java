@@ -12,11 +12,14 @@ public class Passport
 {
    
    public static final Field FIELD_BIRTH_YEAR  = new Field("byr", "\\d{4}",
-      Field.createYearValidator(1920, 2002));
+      Field.createYearValidator(1920, 2002)
+   );
    public static final Field FIELD_ISSUE_YEAR  = new Field("iyr", "\\d{4}",
-      Field.createYearValidator(2010, 2020));
+      Field.createYearValidator(2010, 2020)
+   );
    public static final Field FIELD_EXPIRE_YEAR = new Field("eyr", "\\d{4}",
-      Field.createYearValidator(2020, 2030));
+      Field.createYearValidator(2020, 2030)
+   );
    public static final Field FIELD_HEIGHT      = new Field("hgt", "(\\d+)(cm|in)",
       (matcher) ->
       {
@@ -137,8 +140,8 @@ public class Passport
       
       public Field(String name, String regex, Function <Matcher, Boolean> valueChecker)
       {
-         this.name = name;
-         _pattern = Pattern.compile(regex);
+         this.name     = name;
+         _pattern      = Pattern.compile(regex);
          _valueChecker = valueChecker;
       }
       

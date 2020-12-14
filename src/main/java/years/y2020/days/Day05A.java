@@ -18,6 +18,7 @@ public class Day05A
       System.out.println(getAnswer());
    }
    
+   
    public static int getAnswer() throws IOException
    {
       List <BoardingPass> passes = ReaderUtil.parseFileToList(

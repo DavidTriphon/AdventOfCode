@@ -106,17 +106,18 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
          dir.move(lookingAt);
       }
       while (isInBounds(lookingAt) && isWhitelist != list.contains(get(lookingAt)));
-      
+   
       if (isInBounds(lookingAt))
          return get(lookingAt);
       else
          return null;
    }
    
-   public Map<T, Integer> countSeenFrom(Point origin, List<T> list, boolean isWhitelist)
+   
+   public Map <T, Integer> countSeenFrom(Point origin, List <T> list, boolean isWhitelist)
    {
       HashMap <T, Integer> thoseSeen = new HashMap <>();
-   
+      
       for (Direction dir : Direction.values())
       {
          T thatSeen = getFirstInLine(origin, dir, list, isWhitelist);
@@ -154,7 +155,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
          previousStates.add(copy());
          if (previousStates.size() > stableRange)
             previousStates.remove(0);
-         
+   
          applyRule(rule);
       }
       while (!previousStates.contains(this));
@@ -162,6 +163,12 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    
    
    public String toMapString(Function <T, Character> translator)
+   {
+      return toMapStringS((i) -> (translator.apply(i).toString()));
+   }
+   
+   
+   public String toMapStringS(Function <T, String> translator)
    {
       // generate string grid using translator
       StringBuilder sb = new StringBuilder();
@@ -190,7 +197,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    
    // for use by toMapString only
    private void mapStringHelperX(
-      int y, StringBuilder sb, int minX, int maxX, Function <T, Character> translator)
+      int y, StringBuilder sb, int minX, int maxX, Function <T, String> translator)
    {
       for (int x = minX; x < maxX; x++)
       {

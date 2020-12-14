@@ -64,6 +64,7 @@ class Days2020Tests
       Assertions.assertEquals(153, Day04B.getAnswer());
    }
    
+   
    @Test
    void day05A() throws IOException
    {
@@ -76,6 +77,7 @@ class Days2020Tests
    {
       Assertions.assertEquals(579, Day05B.getAnswer());
    }
+   
    
    @Test
    void day06A() throws IOException
@@ -90,6 +92,7 @@ class Days2020Tests
       Assertions.assertEquals(3143, Day06B.getAnswer());
    }
    
+   
    @Test
    void day07A() throws IOException
    {
@@ -102,6 +105,7 @@ class Days2020Tests
    {
       Assertions.assertEquals(18925, Day07B.getAnswer());
    }
+   
    
    @Test
    void day08A() throws IOException
@@ -116,6 +120,7 @@ class Days2020Tests
       Assertions.assertEquals(1016, Day08B.getAnswer());
    }
    
+   
    @Test
    void day09A() throws IOException
    {
@@ -128,6 +133,7 @@ class Days2020Tests
    {
       Assertions.assertEquals(169521051, Day09B.getAnswer());
    }
+   
    
    @Test
    void day10A() throws IOException

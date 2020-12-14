@@ -29,6 +29,7 @@ public class Day07B
       System.out.println(getAnswer());
    }
    
+   
    public static int getAnswer() throws IOException
    {
       Map <String, ColoredBag> bagRuleMap = ReaderUtil.parseFileToMap(

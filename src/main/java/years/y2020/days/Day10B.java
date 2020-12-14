@@ -18,6 +18,7 @@ public class Day10B
       System.out.println(getAnswer());
    }
    
+   
    public static long getAnswer() throws IOException
    {
       List <Integer> adapterRatings = ReaderUtil.parseFileToList(INPUT_FILE_LOC, Integer::parseInt);
