@@ -42,7 +42,7 @@ public class ReaderUtil
       
       if (delimiter != null)
          inputReader.useDelimiter(Pattern.compile(delimiter));
-      
+   
       while (inputReader.hasNext())
       {
          method.accept(inputReader.next().trim());
@@ -52,10 +52,24 @@ public class ReaderUtil
    /// FUNCTIONAL LIST PARSER
    
    
+   public static List <String> parseFileToList(String fileLocation)
+      throws IOException
+   {
+      return parseFileToList(fileLocation, DEFAULT_DELIMITER, s -> s);
+   }
+   
+   
    public static <T> List <T> parseFileToList(String fileLocation, Function <String, T> translator)
       throws IOException
    {
       return parseFileToList(fileLocation, DEFAULT_DELIMITER, translator);
+   }
+   
+   
+   public static List <String> parseFileToList(String fileLocation, String delimiter)
+      throws IOException
+   {
+      return parseFileToList(fileLocation, delimiter, s -> s);
    }
    
    
