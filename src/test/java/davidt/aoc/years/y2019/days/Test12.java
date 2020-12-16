@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Test12
 {
-   private static final String FILE_LOC_PREFIX = "12/";
+   private static final String FILE_LOC_PREFIX = "input/12/";
    
    private static final String EXPECTED = "exp.txt";
    private static final String START    = "start.txt";

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Test10
 {
-   private static final String FILE_LOC_PREFIX = "10/";
+   private static final String FILE_LOC_PREFIX = "input/10/";
    private static final String FILE_LOC_SUFFIX = ".txt";
    
    
