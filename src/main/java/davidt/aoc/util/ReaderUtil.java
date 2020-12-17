@@ -12,7 +12,16 @@ public class ReaderUtil
 {
    public static String DEFAULT_DELIMITER = "\n";
    
+   public static Function <String, Boolean> DEFAULT_UNTIL = (s) -> false;
+   
    /// FILE TO STRING
+   
+   
+   public static String getScannerString(Scanner scanner)
+   {
+      scanner.useDelimiter(Pattern.compile("\\A"));
+      return scanner.next().trim();
+   }
    
    
    public static String getFileString(URL inputFileURL) throws IOException
@@ -20,7 +29,7 @@ public class ReaderUtil
       return getInputScanner(inputFileURL, "\\A").next().trim();
    }
    
-   // INPUT STREAM TO SCANNER
+   /// URL TO SCANNER
    
    
    public static Scanner getInputScanner(URL inputFileURL) throws IOException
@@ -33,11 +42,110 @@ public class ReaderUtil
    {
       Scanner inputIterator = new Scanner(new BufferedReader(
          new InputStreamReader(inputFileURL.openStream(), StandardCharsets.US_ASCII)));
-      
+   
       if (delimiter != null)
          inputIterator.useDelimiter(Pattern.compile(delimiter));
-      
+   
       return inputIterator;
+   }
+   
+   /// URL TO SCANNER FACTORY
+   
+   // (for parsing to lists of scanners, e.g. 2020 day 16)
+   
+   
+   public static Function <String, Scanner> getScannerFactory(String delimiter)
+   {
+      return (inputString) -> {
+         Scanner scanner = new Scanner(inputString);
+         
+         if (delimiter != null)
+            scanner.useDelimiter(Pattern.compile(delimiter));
+         
+         return scanner;
+      };
+   }
+   
+   /// SCANNER CONSUMER
+   
+   
+   public static void consumeScanner(Scanner scanner, Consumer <String> method)
+   {
+      method.accept(getScannerString(scanner));
+   }
+   
+   /// SCANNER TRANSLATOR
+   
+   
+   public static <T> T consumeScannerTo(Scanner scanner, Function <String, T> translator)
+   {
+      return translator.apply(getScannerString(scanner));
+   }
+   
+   /// SCANNER ITERATOR
+   
+   
+   public static void iterateScannerWithMethod(
+      Scanner scanner, Consumer <String> method, Function <String, Boolean> until)
+   {
+      while (scanner.hasNext())
+      {
+         String next = scanner.next().trim();
+         if (until.apply(next))
+            break;
+         method.accept(next);
+      }
+   }
+   
+   
+   public static void iterateScannerWithMethod(Scanner scanner, Consumer <String> method)
+   {
+      iterateScannerWithMethod(scanner, method, DEFAULT_UNTIL);
+   }
+   
+   
+   public static <T> List <T> iterateScannerToList(
+      Scanner scanner, Function <String, T> translator, Function <String, Boolean> until)
+   {
+      ArrayList <T> list = new ArrayList <>();
+      
+      iterateScannerWithMethod(scanner, (s) -> list.add(translator.apply(s)), until);
+      
+      return list;
+   }
+   
+   
+   public static <T> List <T> iterateScannerToList(
+      Scanner scanner, Function <String, T> translator)
+   {
+      return iterateScannerToList(scanner, translator, DEFAULT_UNTIL);
+   }
+   
+   
+   public static <K, V> Map <K, V> iterateScannerToMap(
+      Scanner scanner, Function <String, V> translator, Function <V, K> keyMaker,
+      Function <String, Boolean> until)
+   {
+      HashMap <K, V> map = new HashMap <>();
+      
+      iterateScannerWithMethod(
+         scanner,
+         (s) -> {
+            V value = translator.apply(s);
+            K key = keyMaker.apply(value);
+            map.put(key, value);
+         },
+         until
+      );
+      
+      return map;
+   }
+   
+   
+   public static <K, V> Map <K, V> iterateScannerToMap(
+      Scanner scanner, Function <String, V> translator, Function <V, K> keyMaker)
+   {
+      return iterateScannerToMap(scanner, translator, keyMaker, DEFAULT_UNTIL);
    }
    
    /// CONSUMER PARSER
@@ -54,12 +162,7 @@ public class ReaderUtil
       URL inputFileURL, String delimiter, Consumer <String> method)
       throws IOException
    {
-      Scanner inputReader = getInputScanner(inputFileURL, delimiter);
-   
-      while (inputReader.hasNext())
-      {
-         method.accept(inputReader.next().trim());
-      }
+      iterateScannerWithMethod(getInputScanner(inputFileURL, delimiter), method);
    }
    
    /// FUNCTIONAL LIST PARSER
@@ -90,22 +193,13 @@ public class ReaderUtil
       URL inputFileURL, String delimiter, Function <String, T> translator)
       throws IOException
    {
-      Scanner inputReader = getInputScanner(inputFileURL, delimiter);
-      
-      ArrayList <T> results = new ArrayList <>();
-      
-      while (inputReader.hasNext())
-      {
-         results.add(translator.apply(inputReader.next().trim()));
-      }
-      
-      return results;
+      return iterateScannerToList(getInputScanner(inputFileURL, delimiter), translator);
    }
    
    /// FUNCTIONAL MAP PARSER
    
    
-   public static <K, V> HashMap <K, V> parseFileToMap(
+   public static <K, V> Map <K, V> parseFileToMap(
       URL inputFileURL, Function <String, V> translator, Function <V, K> keyMaker)
       throws IOException
    {
@@ -113,21 +207,10 @@ public class ReaderUtil
    }
    
    
-   public static <K, V> HashMap <K, V> parseFileToMap(
+   public static <K, V> Map <K, V> parseFileToMap(
       URL inputFileURL, String delimiter, Function <String, V> translator, Function <V, K> keyMaker)
       throws IOException
    {
-      Scanner inputReader = getInputScanner(inputFileURL, delimiter);
-      
-      HashMap <K, V> map = new HashMap <>();
-      
-      while (inputReader.hasNext())
-      {
-         V value = translator.apply(inputReader.next().trim());
-         K key = keyMaker.apply(value);
-         map.put(key, value);
-      }
-      
-      return map;
+      return iterateScannerToMap(getInputScanner(inputFileURL, delimiter), translator, keyMaker);
    }
 }
