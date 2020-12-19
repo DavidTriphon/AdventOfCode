@@ -3,8 +3,6 @@ package davidt.aoc.years.y2019.paint;
 import davidt.aoc.map.*;
 import davidt.aoc.years.y2019.cpu.*;
 
-import java.awt.*;
-
 
 public class EmergencyPaintingRobot
 {
@@ -23,24 +21,24 @@ public class EmergencyPaintingRobot
    
    private final InfiniteGridMap <Integer> _map;
    
-   private final Point     _pos;
-   private       Direction _dir;
+   private final Position   _pos;
+   private       CompassDir _dir;
    
    // constructor
    
    
-   public EmergencyPaintingRobot(Program program, InfiniteGridMap <Integer> map, Point pos)
+   public EmergencyPaintingRobot(Program program, InfiniteGridMap <Integer> map, Position pos)
    {
       _program = program;
-      _map     = map;
-      _pos     = new Point(pos);
-      _dir     = Direction.UP;
+      _map = map;
+      _pos = new Position(pos);
+      _dir = CompassDir.UP;
    }
    
    
    public EmergencyPaintingRobot(Program program, InfiniteGridMap <Integer> map)
    {
-      this(program, map, new Point());
+      this(program, map, new Position(2));
    }
    
    // public methods
@@ -82,7 +80,7 @@ public class EmergencyPaintingRobot
          }
          
          // move 1 space
-         _dir.move(_pos);
+         _pos.addBy(_dir);
       }
    }
 }

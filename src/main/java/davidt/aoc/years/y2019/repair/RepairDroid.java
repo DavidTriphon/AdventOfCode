@@ -4,7 +4,6 @@ import davidt.aoc.map.*;
 import davidt.aoc.years.y2019.cpu.*;
 import davidt.aoc.years.y2019.days.*;
 
-import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -35,11 +34,11 @@ public class RepairDroid
    
    private static final URL PROGRAM_FILE_LOC = Day15A.class.getResource("input/input15.txt");
    
-   private static final Map <Direction, Long> DIR_MAP = Map.ofEntries(
-      Map.entry(Direction.UP, MOVE_NORTH),
-      Map.entry(Direction.DOWN, MOVE_SOUTH),
-      Map.entry(Direction.RIGHT, MOVE_EAST),
-      Map.entry(Direction.LEFT, MOVE_WEST)
+   private static final Map <CompassDir, Long> DIR_MAP = Map.ofEntries(
+      Map.entry(CompassDir.UP, MOVE_NORTH),
+      Map.entry(CompassDir.DOWN, MOVE_SOUTH),
+      Map.entry(CompassDir.RIGHT, MOVE_EAST),
+      Map.entry(CompassDir.LEFT, MOVE_WEST)
    );
    
    private static final Function <Integer, String> TRANSLATOR = (i) ->
@@ -63,15 +62,18 @@ public class RepairDroid
       }
    };
    
+   private static final Grid2DFlatPrinter <Integer> PRINTER =
+      new Grid2DFlatPrinter <>(TRANSLATOR, false);
+   
    // fields
    
    private final Program _program = new Program();
    
-   private final InfiniteGridMap <Integer> _locationInfo = new InfiniteGridMap <>(TILE_UNKNOWN);
+   private final InfiniteGridMap <Integer> _locationInfo = new InfiniteGridMap <>(2, TILE_UNKNOWN);
    
-   private final Point _currentPos = new Point(0, 0);
+   private final Position _currentPos = new Position(2);
    
-   private Point _oxygenLoc = null;
+   private Position _oxygenLoc = null;
    
    // constructor
    
@@ -96,7 +98,7 @@ public class RepairDroid
    
    public void autoFindOxygen()
    {
-      Direction dir = Direction.UP;
+      CompassDir dir = CompassDir.UP;
       
       while (!foundOxygen())
       {
@@ -125,7 +127,7 @@ public class RepairDroid
    
    public void autoExploreMap()
    {
-      Direction dir = Direction.UP;
+      CompassDir dir = CompassDir.UP;
       
       do
       {
@@ -138,7 +140,7 @@ public class RepairDroid
             dir = dir.left();
          }
       }
-      while (!_currentPos.equals(new Point()));
+      while (!_currentPos.isOrigin());
    }
    
    
@@ -153,24 +155,23 @@ public class RepairDroid
       {
          InfiniteGridMap <Integer> next = current.copy();
    
-         for (Point pos : current.listPositions())
+         for (Position pos : current.listPositions())
          {
             if (current.get(pos) == TILE_OXYGEN)
             {
-               for (Direction dir : Direction.compassValues())
+               for (CompassDir dir : CompassDir.compassValues())
                {
-                  Point nextToPos = new Point(pos);
-                  dir.move(nextToPos);
-   
+                  Position nextToPos = pos.sumWith(dir);
+            
                   int nextDoor = current.get(nextToPos);
-   
+            
                   if (nextDoor == TILE_PATH || nextDoor == TILE_DEAD_END)
                      next.set(nextToPos, TILE_OXYGEN);
                }
             }
          }
    
-         System.out.println(next.toMapStringS(TRANSLATOR));
+         System.out.println(PRINTER.toMapString(getMap()));
    
          current = next;
    
@@ -181,7 +182,7 @@ public class RepairDroid
    }
    
    
-   public int move(Direction moveDir)
+   public int move(CompassDir moveDir)
    {
       _program.setInput(new Long[] {DIR_MAP.get(moveDir)});
       _program.compute();
@@ -193,15 +194,13 @@ public class RepairDroid
       {
          case RESPONSE_BLOCKED:
          {
-            Point posInFront = new Point(_currentPos);
-            moveDir.move(posInFront);
-            _locationInfo.set(posInFront, TILE_BLOCKED);
+            _locationInfo.set(_currentPos.sumWith(moveDir), TILE_BLOCKED);
          }
          break;
          case RESPONSE_MOVED:
          {
-            Point previousPos = new Point(_currentPos);
-            moveDir.move(_currentPos);
+            Position previousPos = new Position(_currentPos);
+            _currentPos.addBy(moveDir);
             if (_locationInfo.get(_currentPos) == TILE_PATH)
                _locationInfo.set(previousPos, TILE_DEAD_END);
             _locationInfo.set(_currentPos, TILE_PATH);
@@ -209,12 +208,12 @@ public class RepairDroid
          break;
          case RESPONSE_FOUND:
          {
-            Point previousPos = new Point(_currentPos);
-            moveDir.move(_currentPos);
+            Position previousPos = new Position(_currentPos);
+            _currentPos.addBy(moveDir);
             if (_locationInfo.get(_currentPos) == TILE_PATH)
                _locationInfo.set(previousPos, TILE_DEAD_END);
             _locationInfo.set(_currentPos, TILE_PATH);
-            _oxygenLoc = new Point(_currentPos);
+            _oxygenLoc = new Position(_currentPos);
          }
          break;
       }
@@ -223,9 +222,9 @@ public class RepairDroid
    }
    
    
-   public Point getRobotPos()
+   public Position getRobotPos()
    {
-      return new Point(_currentPos);
+      return new Position(_currentPos);
    }
    
    
@@ -235,15 +234,15 @@ public class RepairDroid
    }
    
    
-   public Point getOxygenPos()
+   public Position getOxygenPos()
    {
-      return new Point(_oxygenLoc);
+      return new Position(_oxygenLoc);
    }
    
    
    public String getFormattedMap()
    {
-      return getMap().toMapStringS(TRANSLATOR);
+      return PRINTER.toMapString(getMap());
    }
    
    

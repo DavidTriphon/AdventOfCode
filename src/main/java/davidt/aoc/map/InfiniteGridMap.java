@@ -1,7 +1,5 @@
 package davidt.aoc.map;
 
-import java.awt.*;
-import java.util.List;
 import java.util.*;
 import java.util.function.*;
 
@@ -10,33 +8,30 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
 {
    // fields
    
-   private final HashMap <Point, T> _map;
-   private       T                  _defaultValue;
-   private       boolean            _dirtyBoundsFlag = true;
-   
-   private int _minX = 0, _maxX = 0, _minY = 0, _maxY = 0;
+   private final HashMap <Position, T> _map;
+   private final Position              _lowerBound;
+   private final Position              _upperBound;
+   private       T                     _defaultValue;
+   private       boolean               _dirtyBoundsFlag = true;
+   private       List <Position>       _positions;
    
    // constructors
    
    
-   public InfiniteGridMap(T defaultValue)
+   public InfiniteGridMap(int dimensionCount, T defaultValue)
    {
-      this(defaultValue, false);
-   }
-   
-   
-   public InfiniteGridMap(T defaultValue, boolean yIsDown)
-   {
-      super(yIsDown);
-      _map          = new HashMap <>();
+      super(dimensionCount);
+      _map = new HashMap <>();
       _defaultValue = defaultValue;
+      _lowerBound = new Position(dimensionCount);
+      _upperBound = new Position(dimensionCount);
    }
    
    // Implemented GridMap methods
    
    
    @Override
-   public T get(Point pos)
+   public T get(Position pos)
    {
       if (pos == null)
          return _defaultValue;
@@ -48,64 +43,63 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    
    
    @Override
-   public void set(Point pos, T obj)
+   public void set(Position pos, T obj)
    {
+      _dirtyBoundsFlag = true;
       if (obj.equals(_defaultValue))
          _map.remove(pos);
       else
-         _map.put(new Point(pos), obj);
+         _map.put(new Position(pos), obj);
    }
    
    
    @Override
-   public List <Point> listPositions()
+   public List <Position> listPositions()
    {
-      return List.copyOf(_map.keySet());
+      if (_dirtyBoundsFlag)
+      {
+         Position lower = getLowerBound().differenceWith(1);
+         Position upper = getUpperBound().sumWith(1);
+         _positions = new ArrayList <>();
+         
+         Position size = upper.differenceWith(lower);
+         int positionCount = size.calcContainedSpace();
+         
+         for (int i = 0; i < positionCount; i++)
+         {
+            _positions.add(Position.getPosOfIndexIn(i, size).sumWith(lower));
+         }
+      }
+      return _positions;
    }
    
    
    @Override
-   public int getXLowerBound()
-   {
-      updateBounds();
-      return _minX;
-   }
-   
-   
-   @Override
-   public int getXUpperBound()
-   {
-      updateBounds();
-      return _maxX + 1;
-   }
-   
-   
-   @Override
-   public int getYLowerBound()
+   public Position getLowerBound()
    {
       updateBounds();
-      return _minY;
+      return new Position(_lowerBound);
    }
    
    
    @Override
-   public int getYUpperBound()
+   public Position getUpperBound()
    {
       updateBounds();
-      return _maxY + 1;
+      return new Position(_upperBound);
    }
    
    
    @Override
    public InfiniteGridMap <T> copy()
    {
-      InfiniteGridMap <T> copy = new InfiniteGridMap <>(_defaultValue, _yIsDown);
-      
-      for (Point pos : listPositions())
+      InfiniteGridMap <T> copy = new InfiniteGridMap <>(_dimensionCount, _defaultValue);
+   
+      for (Position pos : _map.keySet())
       {
          copy.set(pos, get(pos));
       }
-      
+   
       return copy;
    }
    
@@ -116,15 +110,25 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    public Map <T, Integer> count()
    {
       Map <T, Integer> counts = super.count();
-      
-      counts.put(_defaultValue, Integer.MAX_VALUE);
-      
+   
+      counts.put(_defaultValue, Integer.MAX_VALUE); // infinite
+   
       return counts;
    }
    
    
    @Override
-   public T getFirstInLine(Point origin, Direction dir, List <T> list, boolean isWhitelist)
+   public int countOf(T obj)
+   {
+      if (obj.equals(_defaultValue))
+         return Integer.MAX_VALUE; // infinite
+      return super.countOf(obj);
+   }
+   
+   
+   @Override
+   public T getFirstInLine(
+      Position origin, DirectionSet.Direction dir, List <T> list, boolean isWhitelist)
    {
       T result = super.getFirstInLine(origin, dir, list, isWhitelist);
       
@@ -139,18 +143,11 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    
    
    @Override
-   public void applyRule(BiFunction <Point, GridMap <T, InfiniteGridMap <T>>, T> rule)
+   public void applyRule(BiFunction <Position, GridMap <T, InfiniteGridMap <T>>, T> rule)
    {
-      InfiniteGridMap <T> copy = copy();
-   
-      setDefaultValue(rule.apply(null, copy));
+      setDefaultValue(rule.apply(null, this));
       
       super.applyRule(rule);
-      
-      for (Point pos : listBorderPositions())
-      {
-         set(pos, rule.apply(pos, copy));
-      }
    }
    
    // overridden Object methods
@@ -159,7 +156,7 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    @Override
    public int hashCode()
    {
-      return 0;
+      return Objects.hash(_map, _defaultValue);
    }
    
    
@@ -173,14 +170,14 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
       InfiniteGridMap <?> that = (InfiniteGridMap <?>) o;
       if (!_defaultValue.equals(that._defaultValue))
          return false;
-      
-      for (Point pos : listPositions())
+   
+      for (Position pos : _map.keySet())
       {
          if (!get(pos).equals(that.get(pos)))
             return false;
       }
    
-      for (Point pos : that.listPositions())
+      for (Position pos : that._map.keySet())
       {
          if (!get(pos).equals(that.get(pos)))
             return false;
@@ -193,7 +190,10 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    @Override
    public String toString()
    {
-      return "InfiniteGridMap{\n" + toMapString((o) -> o.toString().charAt(0)) + "}";
+      return String.format(
+         "InfiniteGridMap{lowerBound=%s; upperBound=%s; entryCount=%d, defaultValue=%s}",
+         getLowerBound(), getUpperBound(), _map.keySet().size(), _defaultValue
+      );
    }
    
    // instance methods
@@ -208,37 +208,14 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    public void setDefaultValue(T newDefault)
    {
       _defaultValue = newDefault;
-      
-      for (Point pos : listPositions())
+   
+      for (Position pos : _map.keySet())
       {
          if (get(pos).equals(_defaultValue))
             _map.remove(pos);
       }
-      
+   
       _dirtyBoundsFlag = true;
-   }
-   
-   
-   public List <Point> listBorderPositions()
-   {
-      Set <Point> positions = new HashSet <>();
-      
-      for (Point pos : listPositions())
-      {
-         for (Direction dir : Direction.values())
-         {
-            Point neighborPos = new Point(pos);
-            dir.move(neighborPos);
-            positions.add(neighborPos);
-         }
-      }
-      
-      for (Point pos : listPositions())
-      {
-         positions.remove(pos);
-      }
-      
-      return List.copyOf(positions);
    }
    
    // private helper methods
@@ -250,27 +227,23 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
       {
          if (_map.values().isEmpty())
          {
-            _minX = _maxX = 0;
-            _minY = _maxY = 0;
+            // a 3 wide space centered on zero sounds good to me as a default
+            _lowerBound.setAll(-1);
+            _upperBound.setAll(1);
          }
          else
          {
-            _minX = Integer.MAX_VALUE;
-            _maxX = Integer.MIN_VALUE;
-            _minY = Integer.MAX_VALUE;
-            _maxY = Integer.MIN_VALUE;
-            
-            for (Point pos : listPositions())
+            _lowerBound.setAll(Integer.MAX_VALUE);
+            _upperBound.setAll(Integer.MIN_VALUE);
+   
+            for (Position pos : _map.keySet())
             {
-               if (pos.x < _minX)
-                  _minX = pos.x;
-               else if (_maxX < pos.x)
-                  _maxX = pos.x;
-               if (pos.y < _minY)
-                  _minY = pos.y;
-               else if (_maxY < pos.y)
-                  _maxY = pos.y;
+               _lowerBound.makeMin(pos);
+               _upperBound.makeMax(pos);
             }
+   
+            // the upper bound should be exclusive. max() is inclusive.
+            _upperBound.addBy(1);
          }
          _dirtyBoundsFlag = false;
       }

@@ -3,10 +3,8 @@ package davidt.aoc.years.y2020.days;
 import davidt.aoc.map.*;
 import davidt.aoc.util.*;
 
-import java.awt.*;
 import java.io.*;
 import java.net.*;
-import java.util.List;
 import java.util.*;
 
 
@@ -28,45 +26,45 @@ public class Day12A
             INPUT_FILE_LOC,
             (string) -> Map.entry(string.charAt(0), Integer.parseInt(string.substring(1)))
          );
-      
-      Point pos = new Point();
-      
-      Direction dir = Direction.RIGHT;
-      
+   
+      Position pos = new Position(2);
+   
+      CompassDir dir = CompassDir.RIGHT;
+   
       for (Map.Entry <Character, Integer> instruction : instructions)
       {
          switch (instruction.getKey())
          {
             case 'N':
-               pos.y += instruction.getValue();
+               pos.addBy(CompassDir.UP, instruction.getValue());
                break;
             case 'S':
-               pos.y -= instruction.getValue();
+               pos.addBy(CompassDir.DOWN, instruction.getValue());
                break;
             case 'E':
-               pos.x += instruction.getValue();
+               pos.addBy(CompassDir.RIGHT, instruction.getValue());
                break;
             case 'W':
-               pos.x -= instruction.getValue();
+               pos.addBy(CompassDir.LEFT, instruction.getValue());
                break;
             case 'L':
                for (int i = 0; i < instruction.getValue() / 90; i++)
                {
-                  dir = dir.ccw90();
+                  dir = dir.left();
                }
                break;
             case 'R':
                for (int i = 0; i < instruction.getValue() / 90; i++)
                {
-                  dir = dir.cw90();
+                  dir = dir.right();
                }
                break;
             case 'F':
-               dir.move(pos, instruction.getValue());
+               pos.addBy(dir, instruction.getValue());
                break;
          }
       }
-      
-      return Math.abs(pos.x) + Math.abs(pos.y);
+   
+      return pos.calcTaxicabDistance();
    }
 }

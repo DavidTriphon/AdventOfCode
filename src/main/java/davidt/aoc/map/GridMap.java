@@ -1,58 +1,72 @@
 package davidt.aoc.map;
 
-import java.awt.*;
-import java.util.List;
 import java.util.*;
 import java.util.function.*;
 
 
-public abstract class GridMap <T, M extends GridMap <T, M>>
+public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensional
 {
    // fields
    
-   protected final boolean _yIsDown;
+   protected final int _dimensionCount;
    
    // constructor
    
    
-   public GridMap(boolean yIsDown)
+   public GridMap(int dimensionCount)
    {
-      _yIsDown = yIsDown;
+      _dimensionCount = dimensionCount;
+      if (_dimensionCount <= 0)
+         throw new IllegalArgumentException("The number of dimensions must be positive!");
+   }
+   
+   // implemented methods from interface
+   
+   
+   @Override
+   public int dims()
+   {
+      return _dimensionCount;
    }
    
    // abstract methods to implement in subclasses
    
    
-   public abstract T get(Point pos);
+   public abstract T get(Position pos);
    
-   public abstract void set(Point pos, T obj);
+   public abstract void set(Position pos, T obj);
    
-   public abstract List <Point> listPositions();
+   public abstract List <Position> listPositions();
    
    // bounds do not represent the limits of valid positions
    // they represent when to stop searching because all values outside are the same
    // in some cases null for being outside space, in others infinitely a default value
    
    
-   public abstract int getXLowerBound();
+   public abstract Position getLowerBound();
    
-   public abstract int getXUpperBound();
-   
-   public abstract int getYLowerBound();
-   
-   public abstract int getYUpperBound();
+   public abstract Position getUpperBound();
    
    // this should perform a deep copy to be used by the davidt.aoc.automata ruleset iteration
    // methods
    public abstract M copy();
    
-   // implemented methods that apply the same to all subclasses
+   // instance methods that apply the same to all subclasses
    
    
-   public boolean isInBounds(Point pos)
+   public boolean isInBounds(Position pos)
    {
-      return getXLowerBound() <= pos.x && pos.x < getXUpperBound()
-             && getYLowerBound() <= pos.y && pos.y < getYUpperBound();
+      Position lowerBound = getLowerBound();
+      Position upperBound = getUpperBound().differenceWith(1);
+      
+      return (lowerBound.getMin(pos).equals(lowerBound)) &&
+             (upperBound.getMax(pos).equals(upperBound));
+   }
+   
+   
+   public Position getBoundSize()
+   {
+      return getUpperBound().differenceWith(getLowerBound());
    }
    
    
@@ -60,7 +74,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    {
       HashMap <T, Integer> counts = new HashMap <>();
       
-      for (Point pos : listPositions())
+      for (Position pos : listPositions())
       {
          T obj = get(pos);
          if (!counts.containsKey(obj))
@@ -68,7 +82,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
          else
             counts.put(obj, counts.get(obj) + 1);
       }
-   
+      
       return counts;
    }
    
@@ -79,14 +93,13 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    }
    
    
-   public Map <T, Integer> countNeighborsOf(Point pos)
+   public Map <T, Integer> countNeighborsOf(Position pos, DirectionSet dirSet)
    {
       HashMap <T, Integer> neighbors = new HashMap <>();
       
-      for (Direction dir : Direction.values())
+      for (DirectionSet.Direction dir : dirSet.values())
       {
-         Point neighborPos = new Point(pos);
-         dir.move(neighborPos);
+         Position neighborPos = pos.sumWith(dir.intWrapper());
          if (isInBounds(neighborPos))
          {
             T neighbor = get(neighborPos);
@@ -101,19 +114,20 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    }
    
    
-   public T getFirstInLine(Point origin, Direction dir, List <T> list, boolean isWhitelist)
+   public T getFirstInLine(
+      Position origin, DirectionSet.Direction dir, List <T> list, boolean isWhitelist)
    {
       if (origin == null)
          throw new NullPointerException("pos cannot be null");
       
-      Point lookingAt = new Point(origin);
+      Position lookingAt = new Position(origin);
       
       do
       {
-         dir.move(lookingAt);
+         lookingAt.addBy(dir.intWrapper());
       }
       while (isInBounds(lookingAt) && isWhitelist != list.contains(get(lookingAt)));
-   
+      
       if (isInBounds(lookingAt))
          return get(lookingAt);
       else
@@ -121,11 +135,12 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    }
    
    
-   public Map <T, Integer> countSeenFrom(Point origin, List <T> list, boolean isWhitelist)
+   public Map <T, Integer> countSeenFrom(
+      Position origin, DirectionSet dirSet, List <T> list, boolean isWhitelist)
    {
       HashMap <T, Integer> thoseSeen = new HashMap <>();
       
-      for (Direction dir : Direction.values())
+      for (DirectionSet.Direction dir : dirSet.values())
       {
          T thatSeen = getFirstInLine(origin, dir, list, isWhitelist);
          
@@ -142,18 +157,18 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
    }
    
    
-   public void applyRule(BiFunction <Point, GridMap <T, M>, T> rule)
+   public void applyRule(BiFunction <Position, GridMap <T, M>, T> rule)
    {
       M copy = copy();
       
-      for (Point pos : listPositions())
+      for (Position pos : listPositions())
       {
          set(pos, rule.apply(pos, copy));
       }
    }
    
    
-   public void applyRuleUntilStable(BiFunction <Point, GridMap <T, M>, T> rule, int stableRange)
+   public void applyRuleUntilStable(BiFunction <Position, GridMap <T, M>, T> rule, int stableRange)
    {
       ArrayList <M> previousStates = new ArrayList <>();
       
@@ -162,55 +177,9 @@ public abstract class GridMap <T, M extends GridMap <T, M>>
          previousStates.add(copy());
          if (previousStates.size() > stableRange)
             previousStates.remove(0);
-   
+         
          applyRule(rule);
       }
       while (!previousStates.contains(this));
-   }
-   
-   
-   public String toMapString(Function <T, Character> translator)
-   {
-      return toMapStringS((i) -> (translator.apply(i).toString()));
-   }
-   
-   
-   public String toMapStringS(Function <T, String> translator)
-   {
-      // generate string grid using translator
-      StringBuilder sb = new StringBuilder();
-      
-      int minX = getXLowerBound();
-      int maxX = getXUpperBound();
-      int minY = getYLowerBound();
-      int maxY = getYUpperBound();
-      
-      if (_yIsDown)
-         for (int y = minY; y < maxY; y++)
-         {
-            mapStringHelperX(y, sb, minX, maxX, translator);
-         }
-      else
-         for (int y = maxY - 1; minY <= y; y--)
-         {
-            mapStringHelperX(y, sb, minX, maxX, translator);
-         }
-      
-      return sb.toString();
-   }
-   
-   // private methods
-   
-   
-   // for use by toMapString only
-   private void mapStringHelperX(
-      int y, StringBuilder sb, int minX, int maxX, Function <T, String> translator)
-   {
-      for (int x = minX; x < maxX; x++)
-      {
-         sb.append(translator.apply(get(new Point(x, y))));
-      }
-      
-      sb.append('\n');
    }
 }

@@ -3,7 +3,6 @@ package davidt.aoc.years.y2019.arcade;
 import davidt.aoc.map.*;
 import davidt.aoc.years.y2019.cpu.*;
 
-import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.function.*;
@@ -51,11 +50,14 @@ public class Arcade
       }
    };
    
+   private static final Grid2DFlatPrinter <Integer> PRINTER =
+      new Grid2DFlatPrinter <>(TRANSLATOR, true);
+   
    // fields
    
    private final Program _program = new Program();
    
-   private final InfiniteGridMap <Integer> _screen = new InfiniteGridMap <>(TILE_EMPTY);
+   private final InfiniteGridMap <Integer> _screen = new InfiniteGridMap <>(2, TILE_EMPTY);
    
    private int  _outIndex       = 0;
    private long _segmentDisplay = 0;
@@ -97,7 +99,7 @@ public class Arcade
          }
          else
          {
-            _screen.set(new Point((int) x, (int) y), (int) tile);
+            _screen.set(new Position(new int[] {(int) x, (int) y}), (int) tile);
          }
       }
    }
@@ -143,11 +145,11 @@ public class Arcade
    
    public int getBallX()
    {
-      for (Point pos : _screen.listPositions())
+      for (Position pos : _screen.listPositions())
       {
          if (_screen.get(pos).equals(TILE_BALL))
          {
-            return pos.x;
+            return pos.getX();
          }
       }
       
@@ -157,11 +159,11 @@ public class Arcade
    
    public int getPaddleX()
    {
-      for (Point pos : _screen.listPositions())
+      for (Position pos : _screen.listPositions())
       {
          if (_screen.get(pos).equals(TILE_PADDLE))
          {
-            return pos.x;
+            return pos.getX();
          }
       }
       
@@ -177,6 +179,6 @@ public class Arcade
    
    public String getScreenString()
    {
-      return _screen.toMapStringS(TRANSLATOR);
+      return PRINTER.toMapString(_screen);
    }
 }

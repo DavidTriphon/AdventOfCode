@@ -26,7 +26,7 @@ public class Day11A
       Program program = new Program();
       program.setMemory(opCodes);
       
-      InfiniteGridMap <Integer> map = new InfiniteGridMap <>(EmergencyPaintingRobot.PAINT_OLD);
+      InfiniteGridMap <Integer> map = new InfiniteGridMap <>(2, EmergencyPaintingRobot.PAINT_OLD);
       
       EmergencyPaintingRobot robot = new EmergencyPaintingRobot(program, map);
       

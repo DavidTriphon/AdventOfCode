@@ -4,7 +4,6 @@ import davidt.aoc.map.*;
 import davidt.aoc.years.y2019.cpu.*;
 import davidt.aoc.years.y2019.days.*;
 
-import java.awt.*;
 import java.io.*;
 import java.net.*;
 
@@ -25,6 +24,9 @@ public class VacuumRobot
    // private constants
    
    private static final URL PROGRAM_FILE_LOC = Day17A.class.getResource("input/input17.txt");
+   
+   private static final Grid2DFlatPrinter <Character> PRINTER =
+      new Grid2DFlatPrinter <>(Object::toString, false);
    
    // fields
    
@@ -65,7 +67,7 @@ public class VacuumRobot
    
    public String getMapString()
    {
-      return _map.toMapString((c) -> c);
+      return PRINTER.toMapString(_map);
    }
    
    
@@ -78,16 +80,16 @@ public class VacuumRobot
    public int getCrossingAlignmentSum()
    {
       int sum = 0;
-      
-      for (int x = 1; x < _map.width - 1; x++)
+   
+      for (int x = 1; x < _map.getBoundSize().getX() - 1; x++)
       {
-         for (int y = 1; y < _map.height - 1; y++)
+         for (int y = 1; y < _map.getBoundSize().getY() - 1; y++)
          {
-            if (_map.get(new Point(x, y)) == TILE_CROSS)
+            if (_map.get(new Position(new int[] {x, y})) == TILE_CROSS)
                sum += x * y;
          }
       }
-      
+   
       return sum;
    }
    
@@ -103,23 +105,22 @@ public class VacuumRobot
    
    private void identifyIntersections()
    {
-      for (int x = 1; x < _map.width - 1; x++)
+      for (int x = 1; x < _map.getBoundSize().getX() - 1; x++)
       {
-         for (int y = 1; y < _map.height - 1; y++)
+         for (int y = 1; y < _map.getBoundSize().getY() - 1; y++)
          {
-            Point pos = new Point(x, y);
-            
+            Position pos = new Position(new int[] {x, y});
+         
             if (_map.get(pos) != TILE_SPACE)
             {
                boolean isCross = true;
-   
-               for (Direction dir : Direction.compassValues())
+            
+               for (CompassDir dir : CompassDir.compassValues())
                {
-                  Point offset = dir.offset(pos);
-                  if (_map.get(offset) == TILE_SPACE)
+                  if (_map.get(pos.sumWith(dir)) == TILE_SPACE)
                      isCross = false;
                }
-   
+            
                if (isCross)
                   _map.set(pos, TILE_CROSS);
             }

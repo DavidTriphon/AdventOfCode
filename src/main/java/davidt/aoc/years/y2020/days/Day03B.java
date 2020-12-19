@@ -3,10 +3,9 @@ package davidt.aoc.years.y2020.days;
 import davidt.aoc.map.*;
 import davidt.aoc.util.*;
 
-import java.awt.*;
 import java.io.*;
 import java.net.*;
-import java.util.List;
+import java.util.*;
 
 
 public class Day03B
@@ -15,12 +14,12 @@ public class Day03B
    
    private static final char TREE = '#';
    
-   private static final List <Point> SLOPES = List.of(
-      new Point(1, 1),
-      new Point(3, 1),
-      new Point(5, 1),
-      new Point(7, 1),
-      new Point(1, 2)
+   private static final List <Position> SLOPES = List.of(
+      new Position(new int[] {1, 1}),
+      new Position(new int[] {3, 1}),
+      new Position(new int[] {5, 1}),
+      new Position(new int[] {7, 1}),
+      new Position(new int[] {1, 2})
    );
    
    
@@ -37,19 +36,19 @@ public class Day03B
       
       long treeMultiple = 1;
       
-      for (Point slope : SLOPES)
+      for (Position slope : SLOPES)
       {
-         Point currentPos = new Point(0, 0);
+         Position currentPos = new Position(2);
          
          int trees = 0;
          
-         while (currentPos.y < hillMap.height)
+         while (currentPos.getY() < hillMap.getBoundSize().getY())
          {
             if (hillMap.get(currentPos) == TREE)
                trees++;
             
-            currentPos.translate(slope.x, slope.y);
-            currentPos.x = currentPos.x % hillMap.width;
+            currentPos.addBy(slope);
+            currentPos.setX(currentPos.getX() % hillMap.getBoundSize().getX());
          }
          
          treeMultiple *= trees;

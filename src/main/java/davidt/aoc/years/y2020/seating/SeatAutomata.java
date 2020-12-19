@@ -3,7 +3,6 @@ package davidt.aoc.years.y2020.seating;
 import davidt.aoc.automata.*;
 import davidt.aoc.map.*;
 
-import java.awt.*;
 import java.util.*;
 
 
@@ -34,6 +33,10 @@ public enum SeatAutomata implements IAutoState <SeatAutomata>
    NO_SEAT('.', ' '),
    ;
    
+   // constants
+   
+   private final DirectionSet NEIGHBORS = new DirectionSet(2, false, true);
+   
    // fields
    
    private final char _inputLetter, _visualLetter;
@@ -43,7 +46,7 @@ public enum SeatAutomata implements IAutoState <SeatAutomata>
    
    SeatAutomata(char inputLetter, char visualLetter)
    {
-      _inputLetter  = inputLetter;
+      _inputLetter = inputLetter;
       _visualLetter = visualLetter;
    }
    
@@ -51,9 +54,9 @@ public enum SeatAutomata implements IAutoState <SeatAutomata>
    
    
    @Override
-   public SeatAutomata next(Point pos, GridMap <SeatAutomata, ?> map)
+   public SeatAutomata next(Position pos, GridMap <SeatAutomata, ?> map)
    {
-      return next(map.countNeighborsOf(pos));
+      return next(map.countNeighborsOf(pos, NEIGHBORS));
    }
    
    

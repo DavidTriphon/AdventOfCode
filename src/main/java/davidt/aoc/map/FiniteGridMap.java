@@ -1,49 +1,40 @@
 package davidt.aoc.map;
 
-import java.awt.*;
-import java.util.List;
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.*;
 
 
 public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
 {
    // fields
    
-   public final  int        width;
-   public final  int        height;
-   private final Object[][] _map;
+   private final int[] _dimensionSizes;
+   private final Object[] _map;
    
    // constructor
    
    
-   public FiniteGridMap(int width, int height)
+   public FiniteGridMap(int[] dimensionSizes)
    {
-      this(width, height, true);
-   }
-   
-   
-   public FiniteGridMap(int width, int height, boolean yIsDown)
-   {
-      super(yIsDown);
-      this.width  = width;
-      this.height = height;
-      _map        = new Object[width][height];
-   }
-   
-   
-   public FiniteGridMap(int width, int height, T defaultValue)
-   {
-      this(width, height);
+      super(dimensionSizes.length);
+      this._dimensionSizes = Arrays.copyOf(dimensionSizes, dimensionSizes.length);
       
-      for (int x = 0; x < width; x++)
+      int size = 1;
+      
+      for (int length : dimensionSizes)
       {
-         for (int y = 0; y < height; y++)
-         {
-            _map[x][y] = defaultValue;
-         }
+         size *= length;
       }
+      
+      _map = new Object[size];
+   }
+   
+   
+   public FiniteGridMap(T defaultValue, int[] dimensionSizes)
+   {
+      this(dimensionSizes);
+      
+      Arrays.fill(_map, defaultValue);
    }
    
    // implemented methods
@@ -51,68 +42,67 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    
    @SuppressWarnings("unchecked")
    @Override
-   public T get(Point pos)
+   public T get(Position pos)
    {
       checkBounds(pos);
-      return (T) _map[pos.x][pos.y];
+      return (T) _map[Position.getIndexOfPosIn(pos, getUpperBound())];
    }
    
    
    @Override
-   public void set(Point pos, T obj)
+   public void set(Position pos, T obj)
    {
       checkBounds(pos);
-      _map[pos.x][pos.y] = obj;
+      _map[Position.getIndexOfPosIn(pos, getUpperBound())] = obj;
    }
    
    
    @Override
-   public List <Point> listPositions()
+   public List <Position> listPositions()
    {
-      return IntStream.range(0, width * height).mapToObj(
-         (i) -> new Point(i % width, i / width)).collect(
-         Collectors.toUnmodifiableList());
+      ArrayList <Position> positions = new ArrayList <>();
+      
+      for (int i = 0; i < _map.length; i++)
+      {
+         int[] position = new int[_dimensionCount];
+         int remainder = i;
+         
+         for (int dim = 0; dim < _dimensionCount; dim++)
+         {
+            position[dim] = remainder % _dimensionSizes[dim];
+            remainder /= _dimensionSizes[dim];
+         }
+         positions.add(new Position(position));
+      }
+      
+      return positions;
    }
    
    
    @Override
-   public int getXLowerBound()
+   public Position getLowerBound()
    {
-      return 0;
+      return new Position(new int[_dimensionCount]);
    }
    
    
    @Override
-   public int getXUpperBound()
+   public Position getUpperBound()
    {
-      return width;
-   }
-   
-   
-   @Override
-   public int getYLowerBound()
-   {
-      return 0;
-   }
-   
-   
-   @Override
-   public int getYUpperBound()
-   {
-      return height;
+      return new Position(_dimensionSizes);
    }
    
    
    @Override
    public FiniteGridMap <T> copy()
    {
-      FiniteGridMap <T> copy = new FiniteGridMap <>(width, height, _yIsDown);
-      
-      for (Point pos : listPositions())
+      FiniteGridMap <T> copy = new FiniteGridMap <>(_dimensionSizes);
+   
+      for (Position pos : listPositions())
       {
          copy.set(pos, get(pos));
       }
-      
+   
       return copy;
    }
    
@@ -122,7 +112,7 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    @Override
    public int hashCode()
    {
-      return Objects.hash(width, height, _yIsDown);
+      return Arrays.hashCode(_dimensionSizes);
    }
    
    
@@ -134,15 +124,15 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
       if (!(o instanceof FiniteGridMap))
          return false;
       FiniteGridMap <?> that = (FiniteGridMap <?>) o;
-      if (width != that.width || height != that.height || _yIsDown != that._yIsDown)
+      if (!Arrays.equals(_dimensionSizes, that._dimensionSizes))
          return false;
-      
-      for (Point pos : listPositions())
+   
+      for (Position pos : listPositions())
       {
          if (!get(pos).equals(that.get(pos)))
             return false;
       }
-      
+   
       return true;
    }
    
@@ -150,20 +140,34 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    @Override
    public String toString()
    {
-      return "FiniteGridMap{\n" + toMapString((o) -> o.toString().charAt(0)) + "}";
+      return String.format("FiniteGridMap{size=%s}", Arrays.toString(_dimensionSizes));
    }
    
    // private helper methods
    
    
-   private void checkBounds(Point pos)
+   private void checkBounds(Position pos)
    {
-      if (!(0 <= pos.x && pos.x < width))
-         throw new IllegalArgumentException(
-            String.format("X pos (%d) is out of bounds !(0 <= x && x < %d)", pos.x, width));
-      if (!(0 <= pos.y && pos.y < height))
-         throw new IllegalArgumentException(
-            String.format("Y pos (%d) is out of bounds !(0 <= y && y < %d)", pos.y, height));
+      Position lowerBound = getLowerBound();
+      Position upperBound = getUpperBound();
+      
+      for (int dim = 0; dim < _dimensionCount; dim++)
+      {
+         if (pos.get(dim) < lowerBound.get(dim))
+         {
+            throw new IllegalArgumentException(String.format(
+               "%d in the %d dimension is below the lower bound %d",
+               pos.get(dim), dim, lowerBound.get(dim)
+            ));
+         }
+         else if (upperBound.get(dim) <= pos.get(dim))
+         {
+            throw new IllegalArgumentException(String.format(
+               "%d in the %d dimension is above the upper bound %d",
+               pos.get(dim), dim, upperBound.get(dim)
+            ));
+         }
+      }
    }
    
    // static methods
@@ -184,15 +188,15 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
       int width = rows[0].length();
       int height = rows.length;
       
-      FiniteGridMap <T> map = new FiniteGridMap <>(width, height);
+      FiniteGridMap <T> map = new FiniteGridMap <>(new int[] {width, height});
       
       for (int y = 0; y < height; y++)
       {
          for (int x = 0; x < width; x++)
          {
             char c = rows[y].charAt(x);
-            
-            map.set(new Point(x, y), translator.apply(c));
+   
+            map.set(new Position(new int[] {x, y}), translator.apply(c));
          }
       }
       
