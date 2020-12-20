@@ -35,6 +35,7 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    {
       if (pos == null)
          return _defaultValue;
+      IDimensional.checkDimsMatch(this, pos);
       if (_map.containsKey(pos))
          return _map.get(pos);
       
@@ -45,6 +46,7 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    @Override
    public void set(Position pos, T obj)
    {
+      IDimensional.checkDimsMatch(this, pos);
       _dirtyBoundsFlag = true;
       if (obj.equals(_defaultValue))
          _map.remove(pos);
@@ -127,6 +129,18 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    
    
    @Override
+   public Map <T, Integer> countNeighborsOf(Position pos, DirectionSet dirSet)
+   {
+      if (pos == null)
+      {
+         return Map.of(_defaultValue, dirSet.values().size());
+      }
+      
+      return super.countNeighborsOf(pos, dirSet);
+   }
+   
+   
+   @Override
    public T getFirstInLine(
       Position origin, DirectionSet.Direction dir, List <T> list, boolean isWhitelist)
    {
@@ -145,9 +159,14 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    @Override
    public void applyRule(BiFunction <Position, GridMap <T, InfiniteGridMap <T>>, T> rule)
    {
-      setDefaultValue(rule.apply(null, this));
-      
-      super.applyRule(rule);
+      InfiniteGridMap <T> copy = copy();
+   
+      setDefaultValue(rule.apply(null, copy));
+   
+      for (Position pos : listPositions())
+      {
+         set(pos, rule.apply(pos, copy));
+      }
    }
    
    // overridden Object methods

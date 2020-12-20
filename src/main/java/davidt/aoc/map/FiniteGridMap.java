@@ -8,32 +8,23 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
 {
    // fields
    
-   private final int[] _dimensionSizes;
+   private final Position _size;
    private final Object[] _map;
    
    // constructor
    
    
-   public FiniteGridMap(int[] dimensionSizes)
+   public FiniteGridMap(Position size)
    {
-      super(dimensionSizes.length);
-      this._dimensionSizes = Arrays.copyOf(dimensionSizes, dimensionSizes.length);
-      
-      int size = 1;
-      
-      for (int length : dimensionSizes)
-      {
-         size *= length;
-      }
-      
-      _map = new Object[size];
+      super(size.dims());
+      this._size = new Position(size);
+      _map = new Object[size.calcContainedSpace()];
    }
    
    
-   public FiniteGridMap(T defaultValue, int[] dimensionSizes)
+   public FiniteGridMap(T defaultValue, Position size)
    {
-      this(dimensionSizes);
-      
+      this(size);
       Arrays.fill(_map, defaultValue);
    }
    
@@ -44,6 +35,7 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    @Override
    public T get(Position pos)
    {
+      IDimensional.checkDimsMatch(this, pos);
       checkBounds(pos);
       return (T) _map[Position.getIndexOfPosIn(pos, getUpperBound())];
    }
@@ -52,6 +44,7 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    @Override
    public void set(Position pos, T obj)
    {
+      IDimensional.checkDimsMatch(this, pos);
       checkBounds(pos);
       _map[Position.getIndexOfPosIn(pos, getUpperBound())] = obj;
    }
@@ -69,8 +62,8 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
          
          for (int dim = 0; dim < _dimensionCount; dim++)
          {
-            position[dim] = remainder % _dimensionSizes[dim];
-            remainder /= _dimensionSizes[dim];
+            position[dim] = remainder % _size.get(dim);
+            remainder /= _size.get(dim);
          }
          positions.add(new Position(position));
       }
@@ -82,21 +75,21 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    @Override
    public Position getLowerBound()
    {
-      return new Position(new int[_dimensionCount]);
+      return new Position(_dimensionCount);
    }
    
    
    @Override
    public Position getUpperBound()
    {
-      return new Position(_dimensionSizes);
+      return new Position(_size);
    }
    
    
    @Override
    public FiniteGridMap <T> copy()
    {
-      FiniteGridMap <T> copy = new FiniteGridMap <>(_dimensionSizes);
+      FiniteGridMap <T> copy = new FiniteGridMap <>(_size);
    
       for (Position pos : listPositions())
       {
@@ -112,7 +105,7 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    @Override
    public int hashCode()
    {
-      return Arrays.hashCode(_dimensionSizes);
+      return Arrays.hashCode(_size.get());
    }
    
    
@@ -124,7 +117,7 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
       if (!(o instanceof FiniteGridMap))
          return false;
       FiniteGridMap <?> that = (FiniteGridMap <?>) o;
-      if (!Arrays.equals(_dimensionSizes, that._dimensionSizes))
+      if (!_size.equals(that._size))
          return false;
    
       for (Position pos : listPositions())
@@ -140,7 +133,7 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    @Override
    public String toString()
    {
-      return String.format("FiniteGridMap{size=%s}", Arrays.toString(_dimensionSizes));
+      return String.format("FiniteGridMap{size=%s}", Arrays.toString(_size.get()));
    }
    
    // private helper methods
@@ -177,6 +170,16 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
       String mapString,
       Function <Character, T> translator)
    {
+      return fromString(new Position(2), new Position(2), mapString, translator);
+   }
+   
+   
+   public static <T> FiniteGridMap <T> fromString(
+      Position size,
+      Position offset,
+      String mapString,
+      Function <Character, T> translator)
+   {
       String[] rows = mapString.trim().split("\n");
       
       // trim every row
@@ -188,15 +191,17 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
       int width = rows[0].length();
       int height = rows.length;
       
-      FiniteGridMap <T> map = new FiniteGridMap <>(new int[] {width, height});
+      size.set(new Integer[] {width, height});
+      
+      FiniteGridMap <T> map = new FiniteGridMap <>(size);
       
       for (int y = 0; y < height; y++)
       {
          for (int x = 0; x < width; x++)
          {
             char c = rows[y].charAt(x);
-   
-            map.set(new Position(new int[] {x, y}), translator.apply(c));
+            offset.set(new Integer[] {x, y});
+            map.set(offset, translator.apply(c));
          }
       }
       

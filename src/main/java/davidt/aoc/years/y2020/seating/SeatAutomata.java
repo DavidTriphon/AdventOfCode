@@ -13,10 +13,7 @@ public enum SeatAutomata implements IAutoState <SeatAutomata>
          @Override
          protected SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
          {
-            if (!neighbors.containsKey(TAKEN_SEAT) || neighbors.get(TAKEN_SEAT) == 0)
-               return TAKEN_SEAT;
-            else
-               return this;
+            return (neighbors.getOrDefault(TAKEN_SEAT, 0) == 0) ? TAKEN_SEAT : this;
          }
       },
    TAKEN_SEAT('#', 'X')
@@ -24,10 +21,7 @@ public enum SeatAutomata implements IAutoState <SeatAutomata>
          @Override
          protected SeatAutomata next(Map <SeatAutomata, Integer> neighbors)
          {
-            if (neighbors.containsKey(TAKEN_SEAT) && neighbors.get(TAKEN_SEAT) >= 4)
-               return EMPTY_SEAT;
-            else
-               return this;
+            return (neighbors.getOrDefault(TAKEN_SEAT, 0) >= 4) ? EMPTY_SEAT : this;
          }
       },
    NO_SEAT('.', ' '),
@@ -35,7 +29,7 @@ public enum SeatAutomata implements IAutoState <SeatAutomata>
    
    // constants
    
-   private final DirectionSet NEIGHBORS = new DirectionSet(2, false, true);
+   private static final DirectionSet NEIGHBORS = new DirectionSet(2, false, true);
    
    // fields
    

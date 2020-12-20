@@ -25,6 +25,15 @@ public class Position implements IDimensional.Settable <Integer>
    }
    
    
+   public Position(int size, int[] coordinates)
+   {
+      this(size);
+      System.arraycopy(coordinates, 0, _coordinates, 0,
+         Math.min(coordinates.length, _coordinates.length)
+      );
+   }
+   
+   
    public Position(int size, Position pos)
    {
       this(size);

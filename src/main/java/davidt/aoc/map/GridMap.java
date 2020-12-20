@@ -103,10 +103,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
          if (isInBounds(neighborPos))
          {
             T neighbor = get(neighborPos);
-            if (!neighbors.containsKey(neighbor))
-               neighbors.put(neighbor, 1);
-            else
-               neighbors.put(neighbor, neighbors.get(neighbor) + 1);
+            neighbors.put(neighbor, neighbors.getOrDefault(neighbor, 0) + 1);
          }
       }
       
@@ -119,16 +116,18 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
    {
       if (origin == null)
          throw new NullPointerException("pos cannot be null");
-      
+   
       Position lookingAt = new Position(origin);
-      
+   
       do
       {
          lookingAt.addBy(dir.intWrapper());
       }
-      while (isInBounds(lookingAt) && isWhitelist != list.contains(get(lookingAt)));
-      
-      if (isInBounds(lookingAt))
+      while (isInBounds(lookingAt) &&
+             !lookingAt.equals(origin) &&
+             isWhitelist != list.contains(get(lookingAt)));
+   
+      if (isInBounds(lookingAt) && !lookingAt.equals(origin))
          return get(lookingAt);
       else
          return null;
@@ -171,15 +170,53 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
    public void applyRuleUntilStable(BiFunction <Position, GridMap <T, M>, T> rule, int stableRange)
    {
       ArrayList <M> previousStates = new ArrayList <>();
-      
+   
       do
       {
          previousStates.add(copy());
          if (previousStates.size() > stableRange)
             previousStates.remove(0);
-         
+      
          applyRule(rule);
       }
       while (!previousStates.contains(this));
+   }
+   
+   // public static methods
+   
+   // static methods
+   
+   
+   public static <T> void fillFromString(
+      GridMap <T, ?> map, String mapString, Function <Character, T> translator)
+   {
+      fillFromString(map, new Position(map.dims()), mapString, translator);
+   }
+   
+   
+   public static <T> void fillFromString(
+      GridMap <T, ?> map, Position offset, String mapString, Function <Character, T> translator)
+   {
+      String[] rows = mapString.trim().split("\n");
+      
+      // trim every row
+      for (int i = 0; i < rows.length; i++)
+      {
+         rows[i] = rows[i].trim();
+      }
+      
+      int width = rows[0].length();
+      int height = rows.length;
+      
+      for (int y = 0; y < height; y++)
+      {
+         for (int x = 0; x < width; x++)
+         {
+            char c = rows[y].charAt(x);
+            
+            map.set(
+               new Position(map.dims(), new int[] {x, y}).sumWith(offset), translator.apply(c));
+         }
+      }
    }
 }
