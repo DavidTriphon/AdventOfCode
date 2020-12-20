@@ -60,30 +60,24 @@ public class Day17
    
    public static Character cubeRuleset(Position pos, GridMap <Character, ?> map)
    {
-      Map <Character, Integer> neighbors = map.countNeighborsOf(pos, NEIGHBORS_3D);
-      
-      if (map.get(pos) == ALIVE)
-      {
-         return (Set.of(2, 3).contains(neighbors.getOrDefault(ALIVE, 0))) ? ALIVE : DEAD;
-      }
-      else
-      {
-         return neighbors.getOrDefault(ALIVE, 0) == 3 ? ALIVE : DEAD;
-      }
+      return nextState(map.get(pos), map.countNeighborsOf(pos, NEIGHBORS_3D));
    }
    
    
    public static Character hypercubeRuleset(Position pos, GridMap <Character, ?> map)
    {
-      Map <Character, Integer> neighbors = map.countNeighborsOf(pos, NEIGHBORS_4D);
+      return nextState(map.get(pos), map.countNeighborsOf(pos, NEIGHBORS_4D));
+   }
+   
+   
+   public static char nextState(char currState, Map <Character, Integer> neighbors)
+   {
+      int aliveNeighborCount = neighbors.getOrDefault(ALIVE, 0);
       
-      if (map.get(pos) == ALIVE)
-      {
-         return (Set.of(2, 3).contains(neighbors.getOrDefault(ALIVE, 0))) ? ALIVE : DEAD;
-      }
-      else
-      {
-         return neighbors.getOrDefault(ALIVE, 0) == 3 ? ALIVE : DEAD;
-      }
+      boolean isAlive = (currState == ALIVE) ?
+         (aliveNeighborCount == 2 || aliveNeighborCount == 3) :
+         (aliveNeighborCount == 3);
+      
+      return isAlive ? ALIVE : DEAD;
    }
 }
