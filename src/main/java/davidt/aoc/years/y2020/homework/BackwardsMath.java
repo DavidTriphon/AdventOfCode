@@ -1,54 +1,112 @@
 package davidt.aoc.years.y2020.homework;
 
-import java.util.concurrent.atomic.*;
+import java.util.*;
 
 
 public class BackwardsMath
 {
    public static long compute(String equation)
    {
-      return compute(equation, new AtomicInteger());
+      String postfix = getPostfix(equation);
+   
+      ArrayDeque <Long> values = new ArrayDeque <>();
+   
+      for (int i = 0; i < postfix.length(); i++)
+      {
+         char ch = postfix.charAt(i);
+      
+         switch (ch)
+         {
+            case '+':
+            {
+               values.push(values.pop() + values.pop());
+            }
+            break;
+            case '*':
+            {
+               values.push(values.pop() * values.pop());
+            }
+            break;
+            default:
+            {
+               values.push((long) Character.digit(ch, 10));
+            }
+            break;
+         }
+      }
+   
+      return values.pop();
    }
    
    
-   public static long compute(String equation, AtomicInteger index)
+   public static String getPostfix(String equation)
    {
-      long result = getValue(equation, index);
+      ArrayList <Character> postfixEqList = new ArrayList <>();
       
-      while (index.incrementAndGet() < equation.length() &&
-             equation.charAt(index.get()) != ')')
+      int insertionPoint = 0;
+      
+      for (int i = 0; i < equation.length(); )
       {
-         index.incrementAndGet();
-         char operator = equation.charAt(index.getAndAdd(2));
+         char ch = equation.charAt(i++);
          
-         long value = getValue(equation, index);
+         if (ch == ' ')
+            continue;
          
-         switch (operator)
+         while (insertionPoint < postfixEqList.size() &&
+            getWeight(ch) >= getWeight(postfixEqList.get(insertionPoint)))
          {
-            case '+':
-               result += value;
-               break;
-            case '*':
-               result *= value;
-               break;
+            insertionPoint++;
+         }
+         
+         if (shouldRemove(ch))
+            postfixEqList.remove(insertionPoint);
+         else
+            postfixEqList.add(insertionPoint, ch);
+         
+         while (requireDirectInsertNext(ch))
+         {
+            if (equation.charAt(i) == ' ')
+            {
+               i++;
+               continue;
+            }
+            ch = equation.charAt(i++);
+            postfixEqList.add(insertionPoint, ch);
          }
       }
       
-      return result;
+      StringBuilder sb = new StringBuilder();
+      postfixEqList.forEach(sb::append);
+      return sb.toString();
    }
    
    
-   public static long getValue(String equation, AtomicInteger index)
+   private static int getWeight(char ch)
    {
-      char next = equation.charAt(index.get());
-      if (next == '(')
+      switch (ch)
       {
-         index.incrementAndGet();
-         return compute(equation, index);
+         case '(':
+            return 5;
+         case ')':
+            return 4;
+         case '*':
+            return 3;
+         case '+':
+            return 2;
+         default:
+            return 1;
       }
-      else
-      {
-         return Character.digit(next, 10);
-      }
+   }
+   
+   
+   private static boolean requireDirectInsertNext(char insert)
+   {
+      return insert == '*' || insert == '+' || insert == '(';
+   }
+   
+   
+   private static boolean shouldRemove(char ch)
+   {
+      return ch == ')';
    }
 }

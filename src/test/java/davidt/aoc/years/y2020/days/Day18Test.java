@@ -48,14 +48,14 @@ class Day18Test
       assertEquals(46, BackwardsMath.compute(ReaderUtil.getFileString(EXAMPLE_3)));
       assertEquals(1445, BackwardsMath.compute(ReaderUtil.getFileString(EXAMPLE_4)));
       assertEquals(669060, BackwardsMath.compute(ReaderUtil.getFileString(EXAMPLE_5)));
-      assertEquals(669060, BackwardsMath.compute(ReaderUtil.getFileString(EXAMPLE_6)));
+      assertEquals(23340, BackwardsMath.compute(ReaderUtil.getFileString(EXAMPLE_6)));
    }
    
    
    @Test
    void part2Main() throws IOException
    {
-      assertEquals(-1, part1(ReaderUtil.parseFileToList(INPUT_FILE_LOC)));
+      assertEquals(4208490449905L, part2(ReaderUtil.parseFileToList(INPUT_FILE_LOC)));
    }
    
    
