@@ -82,7 +82,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
          else
             counts.put(obj, counts.get(obj) + 1);
       }
-      
+   
       return counts;
    }
    
@@ -90,6 +90,12 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
    public int countOf(T obj)
    {
       return (int) listPositions().stream().filter(pos -> obj.equals(get(pos))).count();
+   }
+   
+   
+   public Map <T, Integer> countNeighborsOf(Position pos)
+   {
+      return countNeighborsOf(pos, new DirectionSet(dims(), false, true));
    }
    
    
@@ -176,7 +182,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
          previousStates.add(copy());
          if (previousStates.size() > stableRange)
             previousStates.remove(0);
-      
+   
          applyRule(rule);
       }
       while (!previousStates.contains(this));

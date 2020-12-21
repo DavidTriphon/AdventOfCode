@@ -5,7 +5,6 @@ import davidt.aoc.util.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 
 public class Day17
@@ -16,9 +15,6 @@ public class Day17
    public static final char DEAD  = '.';
    
    public static final int BOOT_UP_CYCLES = 6;
-   
-   public static final DirectionSet NEIGHBORS_3D = new DirectionSet(3, false, true);
-   public static final DirectionSet NEIGHBORS_4D = new DirectionSet(4, false, true);
    
    
    public static void main(String[] args) throws IOException
@@ -32,52 +28,38 @@ public class Day17
    
    public static int part1(String mapString)
    {
-      InfiniteGridMap <Character> map3D = new InfiniteGridMap <>(3, DEAD);
-      GridMap.fillFromString(map3D, mapString, (c) -> c);
-      
-      for (int i = 0; i < BOOT_UP_CYCLES; i++)
-      {
-         map3D.applyRule(Day17::cubeRuleset);
-      }
-      
-      return map3D.countOf(ALIVE);
+      return countBootUp(mapString, 3);
    }
    
    
    public static int part2(String mapString)
    {
-      InfiniteGridMap <Character> map4D = new InfiniteGridMap <>(4, DEAD);
-      GridMap.fillFromString(map4D, mapString, (c) -> c);
+      return countBootUp(mapString, 4);
+   }
+   
+   
+   public static int countBootUp(String mapString, int dims)
+   {
+      InfiniteGridMap <Character> gridMap = new InfiniteGridMap <>(dims, DEAD);
+      GridMap.fillFromString(gridMap, mapString, (c) -> c);
       
       for (int i = 0; i < BOOT_UP_CYCLES; i++)
       {
-         map4D.applyRule(Day17::hypercubeRuleset);
+         gridMap.applyRule(Day17::conwayRuleset);
       }
       
-      return map4D.countOf(ALIVE);
+      return gridMap.countOf(ALIVE);
    }
    
    
-   public static Character cubeRuleset(Position pos, GridMap <Character, ?> map)
+   public static Character conwayRuleset(Position pos, GridMap <Character, ?> map)
    {
-      return nextState(map.get(pos), map.countNeighborsOf(pos, NEIGHBORS_3D));
-   }
-   
-   
-   public static Character hypercubeRuleset(Position pos, GridMap <Character, ?> map)
-   {
-      return nextState(map.get(pos), map.countNeighborsOf(pos, NEIGHBORS_4D));
-   }
-   
-   
-   public static char nextState(char currState, Map <Character, Integer> neighbors)
-   {
-      int aliveNeighborCount = neighbors.getOrDefault(ALIVE, 0);
+      int aliveNeighborCount = map.countNeighborsOf(pos).getOrDefault(ALIVE, 0);
       
-      boolean isAlive = (currState == ALIVE) ?
+      boolean willBeAlive = (map.get(pos) == ALIVE) ?
          (aliveNeighborCount == 2 || aliveNeighborCount == 3) :
          (aliveNeighborCount == 3);
       
-      return isAlive ? ALIVE : DEAD;
+      return willBeAlive ? ALIVE : DEAD;
    }
 }
