@@ -80,7 +80,7 @@ public class EmergencyPaintingRobot
          }
          
          // move 1 space
-         _pos.addBy(_dir);
+         _pos.add(_dir);
       }
    }
 }

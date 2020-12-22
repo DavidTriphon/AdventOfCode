@@ -22,7 +22,7 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    }
    
    
-   public FiniteGridMap(T defaultValue, Position size)
+   public FiniteGridMap(Position size, T defaultValue)
    {
       this(size);
       Arrays.fill(_map, defaultValue);
@@ -53,22 +53,7 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    @Override
    public List <Position> listPositions()
    {
-      ArrayList <Position> positions = new ArrayList <>();
-      
-      for (int i = 0; i < _map.length; i++)
-      {
-         int[] position = new int[_dimensionCount];
-         int remainder = i;
-         
-         for (int dim = 0; dim < _dimensionCount; dim++)
-         {
-            position[dim] = remainder % _size.get(dim);
-            remainder /= _size.get(dim);
-         }
-         positions.add(new Position(position));
-      }
-      
-      return positions;
+      return getBoundSize().listContainedPositions();
    }
    
    
@@ -166,6 +151,12 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
    // static methods
    
    
+   public static FiniteGridMap <Character> fromString(String mapString)
+   {
+      return fromString(new Position(2), new Position(2), mapString, c -> c);
+   }
+   
+   
    public static <T> FiniteGridMap <T> fromString(
       String mapString,
       Function <Character, T> translator)
@@ -200,8 +191,10 @@ public class FiniteGridMap <T> extends GridMap <T, FiniteGridMap <T>>
          for (int x = 0; x < width; x++)
          {
             char c = rows[y].charAt(x);
-            offset.set(new Integer[] {x, y});
-            map.set(offset, translator.apply(c));
+            map.set(
+               offset.copy().add(new Position(offset.dims(), new int[] {x, y})),
+               translator.apply(c)
+            );
          }
       }
       

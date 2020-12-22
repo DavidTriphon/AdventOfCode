@@ -117,7 +117,7 @@ public class VacuumRobot
             
                for (CompassDir dir : CompassDir.compassValues())
                {
-                  if (_map.get(pos.sumWith(dir)) == TILE_SPACE)
+                  if (_map.get(pos.copy().add(dir)) == TILE_SPACE)
                      isCross = false;
                }
             

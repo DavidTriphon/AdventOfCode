@@ -4,20 +4,20 @@ public interface IDimensional
 {
    int dims();
    
-   static void checkDimIndexArg(IDimensional obj, int dimensionIndex)
+   static void checkDimIndexArg(IDimensional obj, int dim)
    {
-      if (dimensionIndex >= obj.dims())
+      if (dim >= obj.dims())
       {
          throw new IllegalArgumentException(String
             .format("A %dD object does not have a dimension at index %d!", obj.dims(),
-               dimensionIndex
+               dim
             ));
       }
-      
-      if (dimensionIndex < 0)
+   
+      if (dim < 0)
       {
          throw new IllegalArgumentException(
-            String.format("Dimension indices cannot be negative! (%d)", dimensionIndex)
+            String.format("Dimension indices cannot be negative! (%d)", dim)
          );
       }
    }
@@ -40,7 +40,7 @@ public interface IDimensional
    
    interface Gettable <T> extends IDimensional
    {
-      T get(int dimensionIndex);
+      T get(int dim);
       
       T[] get();
    }
@@ -48,7 +48,7 @@ public interface IDimensional
    
    interface Settable <T> extends Gettable <T>
    {
-      void set(int dimensionIndex, T value);
+      void set(int dim, T value);
       
       void set(T[] values);
    }

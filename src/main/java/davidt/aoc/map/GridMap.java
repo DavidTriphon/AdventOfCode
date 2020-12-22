@@ -57,16 +57,16 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
    public boolean isInBounds(Position pos)
    {
       Position lowerBound = getLowerBound();
-      Position upperBound = getUpperBound().differenceWith(1);
-      
-      return (lowerBound.getMin(pos).equals(lowerBound)) &&
-             (upperBound.getMax(pos).equals(upperBound));
+      Position upperBound = getUpperBound().copy().subtract(1);
+   
+      return (lowerBound.copy().min(pos).equals(lowerBound)) &&
+         (upperBound.copy().max(pos).equals(upperBound));
    }
    
    
    public Position getBoundSize()
    {
-      return getUpperBound().differenceWith(getLowerBound());
+      return getUpperBound().copy().subtract(getLowerBound());
    }
    
    
@@ -105,7 +105,7 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
       
       for (DirectionSet.Direction dir : dirSet.values())
       {
-         Position neighborPos = pos.sumWith(dir.intWrapper());
+         Position neighborPos = pos.copy().add(dir.intWrapper());
          if (isInBounds(neighborPos))
          {
             T neighbor = get(neighborPos);
@@ -127,11 +127,11 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
    
       do
       {
-         lookingAt.addBy(dir.intWrapper());
+         lookingAt.add(dir.intWrapper());
       }
       while (isInBounds(lookingAt) &&
-             !lookingAt.equals(origin) &&
-             isWhitelist != list.contains(get(lookingAt)));
+         !lookingAt.equals(origin) &&
+         isWhitelist != list.contains(get(lookingAt)));
    
       if (isInBounds(lookingAt) && !lookingAt.equals(origin))
          return get(lookingAt);
@@ -219,9 +219,11 @@ public abstract class GridMap <T, M extends GridMap <T, M>> implements IDimensio
          for (int x = 0; x < width; x++)
          {
             char c = rows[y].charAt(x);
-            
+   
             map.set(
-               new Position(map.dims(), new int[] {x, y}).sumWith(offset), translator.apply(c));
+               new Position(map.dims(), new int[] {x, y}).add(offset),
+               translator.apply(c)
+            );
          }
       }
    }

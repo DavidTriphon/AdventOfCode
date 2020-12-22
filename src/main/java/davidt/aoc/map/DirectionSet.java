@@ -144,10 +144,10 @@ public class DirectionSet implements IDimensional
       
       
       @Override
-      public Polarity get(int dimensionIndex)
+      public Polarity get(int dim)
       {
-         IDimensional.checkDimIndexArg(this, dimensionIndex);
-         return _dirs[dimensionIndex];
+         IDimensional.checkDimIndexArg(this, dim);
+         return _dirs[dim];
       }
       
       
@@ -179,11 +179,11 @@ public class DirectionSet implements IDimensional
       {
          return new IDimensional.Gettable <>()
          {
-            
+   
             @Override
-            public Integer get(int dimensionIndex)
+            public Integer get(int dim)
             {
-               return _dirs[dimensionIndex].magnitude;
+               return _dirs[dim].magnitude;
             }
             
             

@@ -43,13 +43,14 @@ public class Position implements IDimensional.Settable <Integer>
    
    public Position(int size, int fillWith)
    {
-      this(iterateDims(size, (dim) -> fillWith));
+      this(size);
+      iterateDims((dim) -> _coordinates[dim] = fillWith);
    }
    
    
    public Position(int size)
    {
-      this(size, 0);
+      this(new int[size]);
    }
    
    // object overrides
@@ -93,10 +94,10 @@ public class Position implements IDimensional.Settable <Integer>
    
    
    @Override
-   public Integer get(int dimensionIndex)
+   public Integer get(int dim)
    {
-      IDimensional.checkDimIndexArg(this, dimensionIndex);
-      return _coordinates[dimensionIndex];
+      IDimensional.checkDimIndexArg(this, dim);
+      return _coordinates[dim];
    }
    
    
@@ -114,21 +115,17 @@ public class Position implements IDimensional.Settable <Integer>
    
    
    @Override
-   public void set(int dimensionIndex, Integer newValue)
+   public void set(int dim, Integer newValue)
    {
-      IDimensional.checkDimIndexArg(this, dimensionIndex);
-      _coordinates[dimensionIndex] = newValue;
+      IDimensional.checkDimIndexArg(this, dim);
+      _coordinates[dim] = newValue;
    }
    
    
    @Override
    public void set(Integer[] newPos)
    {
-      int minDims = Math.min(dims(), newPos.length);
-      
-      iterateDims(minDims, (dim) -> {
-         _coordinates[dim] = newPos[dim];
-      });
+      iterateDims(Math.min(dims(), newPos.length), (dim) -> _coordinates[dim] = newPos[dim]);
    }
    
    // getters and getters
@@ -173,18 +170,14 @@ public class Position implements IDimensional.Settable <Integer>
    public void set(IDimensional.Gettable <Integer> newPos)
    {
       int minDims = Math.min(dims(), newPos.dims());
-      
-      iterateDims(minDims, (dim) -> {
-         _coordinates[dim] = newPos.get(dim);
-      });
+   
+      iterateDims(minDims, (dim) -> _coordinates[dim] = newPos.get(dim));
    }
    
    
    public void setAll(int uniformPos)
    {
-      iterateDims((dim) -> {
-         _coordinates[dim] = uniformPos;
-      });
+      iterateDims((dim) -> _coordinates[dim] = uniformPos);
    }
    
    // calculator getters
@@ -239,230 +232,202 @@ public class Position implements IDimensional.Settable <Integer>
       return true;
    }
    
+   
+   public List <Position> listContainedPositions()
+   {
+      List <Position> positionList = new ArrayList <>();
+      positionList.add(new Position(dims()));
+      
+      for (int dim = 0; dim < dims(); dim++)
+      {
+         for (Position pos : List.copyOf(positionList))
+         {
+            for (int distance = 1; distance < get(dim); distance++)
+            {
+               positionList.add(pos.copy().add(dim, distance));
+            }
+         }
+      }
+      
+      return positionList;
+   }
+   
    // mutator methods
    
    
-   public void addBy(IDimensional.Gettable <Integer> offset)
+   public Position add(IDimensional.Gettable <Integer> offset)
    {
       IDimensional.checkDimsMatch(this, offset);
-      iterateDims((dim) -> {
-         _coordinates[dim] += offset.get(dim);
-      });
+      iterateDims((dim) -> _coordinates[dim] += offset.get(dim));
+      return this;
    }
    
    
-   public void addBy(IDimensional.Gettable <Integer> offset, int scalar)
+   public Position add(IDimensional.Gettable <Integer> offset, int scalar)
    {
       IDimensional.checkDimsMatch(this, offset);
-      iterateDims((dim) -> {
-         _coordinates[dim] += scalar * offset.get(dim);
-      });
+      iterateDims((dim) -> _coordinates[dim] += scalar * offset.get(dim));
+      return this;
    }
    
    
-   public void addBy(int offset)
+   public Position add(int offset)
    {
-      iterateDims((dim) -> {
-         _coordinates[dim] += offset;
-      });
+      iterateDims((dim) -> _coordinates[dim] += offset);
+      return this;
    }
    
    
-   public void subtractBy(IDimensional.Gettable <Integer> offset)
+   public Position add(int dim, int offset)
    {
-      IDimensional.checkDimsMatch(this, offset);
-      iterateDims((dim) -> {
-         _coordinates[dim] -= offset.get(dim);
-      });
+      IDimensional.checkDimIndexArg(this, dim);
+      _coordinates[dim] += offset;
+      return this;
    }
    
    
-   public void subtractBy(IDimensional.Gettable <Integer> offset, int scalar)
+   public Position subtract(IDimensional.Gettable <Integer> offset)
    {
       IDimensional.checkDimsMatch(this, offset);
-      iterateDims((dim) -> {
-         _coordinates[dim] -= scalar * offset.get(dim);
-      });
+      iterateDims((dim) -> _coordinates[dim] -= offset.get(dim));
+      return this;
    }
    
    
-   public void subtractBy(int offset)
+   public Position subtract(IDimensional.Gettable <Integer> offset, int scalar)
    {
-      iterateDims((dim) -> {
-         _coordinates[dim] -= offset;
-      });
+      IDimensional.checkDimsMatch(this, offset);
+      iterateDims((dim) -> _coordinates[dim] -= scalar * offset.get(dim));
+      return this;
    }
    
    
-   public void multiplyBy(int scalar)
+   public Position subtract(int offset)
    {
-      iterateDims((dim) -> {
-         _coordinates[dim] *= scalar;
-      });
+      iterateDims((dim) -> _coordinates[dim] -= offset);
+      return this;
    }
    
    
-   public void divideBy(int denominator)
+   public Position subtract(int dim, int offset)
    {
-      iterateDims((dim) -> {
-         _coordinates[dim] /= denominator;
-      });
+      IDimensional.checkDimIndexArg(this, dim);
+      _coordinates[dim] -= offset;
+      return this;
    }
    
    
-   public void moduloBy(int denominator)
+   public Position multiply(IDimensional.Gettable <Integer> scalar)
    {
-      iterateDims((dim) -> {
-         _coordinates[dim] %= denominator;
-      });
+      IDimensional.checkDimsMatch(this, scalar);
+      iterateDims((dim) -> _coordinates[dim] *= scalar.get(dim));
+      return this;
    }
    
    
-   public void makeOpposite()
+   public Position multiply(int scalar)
    {
-      iterateDims((dim) -> {
-         _coordinates[dim] = -_coordinates[dim];
-      });
+      iterateDims((dim) -> _coordinates[dim] *= scalar);
+      return this;
    }
    
    
-   public void makeOpposite(int dimensionIndex)
+   public Position multiply(int dim, int scalar)
    {
-      IDimensional.checkDimIndexArg(this, dimensionIndex);
-      _coordinates[dimensionIndex] = -_coordinates[dimensionIndex];
+      IDimensional.checkDimIndexArg(this, dim);
+      _coordinates[dim] *= scalar;
+      return this;
    }
    
    
-   public void makeMax(IDimensional.Gettable <Integer> pos)
+   public Position divide(IDimensional.Gettable <Integer> denominator)
+   {
+      IDimensional.checkDimsMatch(this, denominator);
+      iterateDims((dim) -> _coordinates[dim] /= denominator.get(dim));
+      return this;
+   }
+   
+   
+   public Position divide(int denominator)
+   {
+      iterateDims((dim) -> _coordinates[dim] /= denominator);
+      return this;
+   }
+   
+   
+   public Position divide(int dim, int denominator)
+   {
+      IDimensional.checkDimIndexArg(this, dim);
+      _coordinates[dim] /= denominator;
+      return this;
+   }
+   
+   
+   public Position modulo(IDimensional.Gettable <Integer> denominator)
+   {
+      IDimensional.checkDimsMatch(this, denominator);
+      iterateDims((dim) -> _coordinates[dim] %= denominator.get(dim));
+      return this;
+   }
+   
+   
+   public Position modulo(int denominator)
+   {
+      iterateDims((dim) -> _coordinates[dim] %= denominator);
+      return this;
+   }
+   
+   
+   public Position modulo(int dim, int denominator)
+   {
+      IDimensional.checkDimIndexArg(this, dim);
+      _coordinates[dim] %= denominator;
+      return this;
+   }
+   
+   
+   public Position negate()
+   {
+      iterateDims((dim) -> _coordinates[dim] = -_coordinates[dim]);
+      return this;
+   }
+   
+   
+   public Position negate(int dim)
+   {
+      IDimensional.checkDimIndexArg(this, dim);
+      _coordinates[dim] = -_coordinates[dim];
+      return this;
+   }
+   
+   
+   public Position max(IDimensional.Gettable <Integer> pos)
    {
       IDimensional.checkDimsMatch(this, pos);
-      iterateDims((dim) -> {
-         _coordinates[dim] = Math.max(_coordinates[dim], pos.get(dim));
-      });
+      iterateDims((dim) -> _coordinates[dim] = Math.max(_coordinates[dim], pos.get(dim)));
+      return this;
    }
    
    
-   public void makeMin(IDimensional.Gettable <Integer> pos)
+   public Position min(IDimensional.Gettable <Integer> pos)
    {
       IDimensional.checkDimsMatch(this, pos);
-      iterateDims((dim) -> {
-         _coordinates[dim] = Math.min(_coordinates[dim], pos.get(dim));
-      });
+      iterateDims((dim) -> _coordinates[dim] = Math.min(_coordinates[dim], pos.get(dim)));
+      return this;
    }
    
    // methods that return new Positions
    
    
-   public Position sumWith(IDimensional.Gettable <Integer> offset)
+   public Position copy()
    {
-      IDimensional.checkDimsMatch(this, offset);
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] + offset.get(dim)
-      ));
+      return new Position(this);
    }
    
    
-   public Position sumWith(IDimensional.Gettable <Integer> offset, int scalar)
+   public Position withDims(int dims)
    {
-      IDimensional.checkDimsMatch(this, offset);
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] + scalar * offset.get(dim)
-      ));
-   }
-   
-   
-   public Position sumWith(int offset)
-   {
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] + offset
-      ));
-   }
-   
-   
-   public Position differenceWith(IDimensional.Gettable <Integer> offset)
-   {
-      IDimensional.checkDimsMatch(this, offset);
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] - offset.get(dim)
-      ));
-   }
-   
-   
-   public Position differenceWith(IDimensional.Gettable <Integer> offset, int scalar)
-   {
-      IDimensional.checkDimsMatch(this, offset);
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] - scalar * offset.get(dim)
-      ));
-   }
-   
-   
-   public Position differenceWith(int offset)
-   {
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] - offset
-      ));
-   }
-   
-   
-   public Position productOf(int scalar)
-   {
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] * scalar
-      ));
-   }
-   
-   
-   public Position quotientOf(int denominator)
-   {
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] / denominator
-      ));
-   }
-   
-   
-   public Position remainderOf(int denominator)
-   {
-      return new Position(iterateDims((dim) ->
-         _coordinates[dim] % denominator
-      ));
-   }
-   
-   
-   public Position getOpposite()
-   {
-      return new Position(iterateDims((dim) ->
-         -_coordinates[dim]
-      ));
-   }
-   
-   
-   public Position getOpposite(int dimensionIndex)
-   {
-      // checkDim is already called in copy.makeOpposite.
-      // if you remove that method call, uncomment the next code line.
-      // IDimensional.checkDimIndexArg(this, dimensionIndex);
-      Position copy = new Position(this);
-      copy.makeOpposite(dimensionIndex);
-      return copy;
-   }
-   
-   
-   public Position getMax(IDimensional.Gettable <Integer> pos)
-   {
-      IDimensional.checkDimsMatch(this, pos);
-      return new Position(iterateDims((dim) -> {
-         return Math.max(_coordinates[dim], pos.get(dim));
-      }));
-   }
-   
-   
-   public Position getMin(IDimensional.Gettable <Integer> pos)
-   {
-      IDimensional.checkDimsMatch(this, pos);
-      return new Position(iterateDims((dim) -> {
-         return Math.min(_coordinates[dim], pos.get(dim));
-      }));
+      return new Position(dims, this);
    }
    
    // private helper methods
@@ -473,12 +438,6 @@ public class Position implements IDimensional.Settable <Integer>
       iterateDims(_coordinates.length, bodyMethod);
    }
    
-   
-   private int[] iterateDims(Function <Integer, Integer> bodyMethod)
-   {
-      return iterateDims(_coordinates.length, bodyMethod);
-   }
-   
    // public static methods
    
    
@@ -486,8 +445,8 @@ public class Position implements IDimensional.Settable <Integer>
       Position innerPos, Position bounds)
    {
       IDimensional.checkDimsMatch(innerPos, bounds);
-      
-      if (!bounds.differenceWith(1).getMax(innerPos).equals(bounds.differenceWith(1)))
+   
+      if (!bounds.copy().subtract(1).copy().max(innerPos).equals(bounds.copy().subtract(1)))
          throw new IllegalArgumentException(String.format(
             "innerPos cannot exceed bounds in any dimension. innerPos = %s, bounds = %s",
             innerPos, bounds
@@ -513,7 +472,7 @@ public class Position implements IDimensional.Settable <Integer>
       if (index >= bounds.calcContainedSpace())
          throw new IllegalArgumentException(String.format(
             "index cannot exceed the number of spaces contained by the space. index = %d, pos = " +
-            "%s, space = %d",
+               "%s, space = %d",
             index, bounds, bounds.calcContainedSpace()
          ));
       
@@ -537,18 +496,5 @@ public class Position implements IDimensional.Settable <Integer>
       {
          bodyMethod.accept(dim);
       }
-   }
-   
-   
-   private static int[] iterateDims(int dimCount, Function <Integer, Integer> bodyMethod)
-   {
-      int[] resultCoords = new int[dimCount];
-      
-      for (int dim = 0; dim < dimCount; dim++)
-      {
-         resultCoords[dim] = bodyMethod.apply(dim);
-      }
-      
-      return resultCoords;
    }
 }

@@ -60,16 +60,16 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    {
       if (_dirtyBoundsFlag)
       {
-         Position lower = getLowerBound().differenceWith(1);
-         Position upper = getUpperBound().sumWith(1);
+         Position lower = getLowerBound().copy().subtract(1);
+         Position upper = getUpperBound().copy().add(1);
          _positions = new ArrayList <>();
-         
-         Position size = upper.differenceWith(lower);
+   
+         Position size = upper.copy().subtract(lower);
          int positionCount = size.calcContainedSpace();
-         
+   
          for (int i = 0; i < positionCount; i++)
          {
-            _positions.add(Position.getPosOfIndexIn(i, size).sumWith(lower));
+            _positions.add(Position.getPosOfIndexIn(i, size).copy().add(lower));
          }
       }
       return _positions;
@@ -257,12 +257,12 @@ public class InfiniteGridMap <T> extends GridMap <T, InfiniteGridMap <T>>
    
             for (Position pos : _map.keySet())
             {
-               _lowerBound.makeMin(pos);
-               _upperBound.makeMax(pos);
+               _lowerBound.min(pos);
+               _upperBound.max(pos);
             }
    
             // the upper bound should be exclusive. max() is inclusive.
-            _upperBound.addBy(1);
+            _upperBound.add(1);
          }
          _dirtyBoundsFlag = false;
       }

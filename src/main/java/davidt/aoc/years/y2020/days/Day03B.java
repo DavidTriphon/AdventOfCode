@@ -47,8 +47,7 @@ public class Day03B
             if (hillMap.get(currentPos) == TREE)
                trees++;
             
-            currentPos.addBy(slope);
-            currentPos.setX(currentPos.getX() % hillMap.getBoundSize().getX());
+            currentPos.add(slope).modulo(0, hillMap.getBoundSize().getX());
          }
          
          treeMultiple *= trees;

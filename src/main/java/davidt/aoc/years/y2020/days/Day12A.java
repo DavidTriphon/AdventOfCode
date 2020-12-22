@@ -36,16 +36,16 @@ public class Day12A
          switch (instruction.getKey())
          {
             case 'N':
-               pos.addBy(CompassDir.UP, instruction.getValue());
+               pos.add(CompassDir.UP, instruction.getValue());
                break;
             case 'S':
-               pos.addBy(CompassDir.DOWN, instruction.getValue());
+               pos.add(CompassDir.DOWN, instruction.getValue());
                break;
             case 'E':
-               pos.addBy(CompassDir.RIGHT, instruction.getValue());
+               pos.add(CompassDir.RIGHT, instruction.getValue());
                break;
             case 'W':
-               pos.addBy(CompassDir.LEFT, instruction.getValue());
+               pos.add(CompassDir.LEFT, instruction.getValue());
                break;
             case 'L':
                for (int i = 0; i < instruction.getValue() / 90; i++)
@@ -60,7 +60,7 @@ public class Day12A
                }
                break;
             case 'F':
-               pos.addBy(dir, instruction.getValue());
+               pos.add(dir, instruction.getValue());
                break;
          }
       }

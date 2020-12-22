@@ -161,7 +161,7 @@ public class RepairDroid
             {
                for (CompassDir dir : CompassDir.compassValues())
                {
-                  Position nextToPos = pos.sumWith(dir);
+                  Position nextToPos = pos.copy().add(dir);
             
                   int nextDoor = current.get(nextToPos);
             
@@ -194,13 +194,13 @@ public class RepairDroid
       {
          case RESPONSE_BLOCKED:
          {
-            _locationInfo.set(_currentPos.sumWith(moveDir), TILE_BLOCKED);
+            _locationInfo.set(_currentPos.copy().add(moveDir), TILE_BLOCKED);
          }
          break;
          case RESPONSE_MOVED:
          {
             Position previousPos = new Position(_currentPos);
-            _currentPos.addBy(moveDir);
+            _currentPos.add(moveDir);
             if (_locationInfo.get(_currentPos) == TILE_PATH)
                _locationInfo.set(previousPos, TILE_DEAD_END);
             _locationInfo.set(_currentPos, TILE_PATH);
@@ -209,7 +209,7 @@ public class RepairDroid
          case RESPONSE_FOUND:
          {
             Position previousPos = new Position(_currentPos);
-            _currentPos.addBy(moveDir);
+            _currentPos.add(moveDir);
             if (_locationInfo.get(_currentPos) == TILE_PATH)
                _locationInfo.set(previousPos, TILE_DEAD_END);
             _locationInfo.set(_currentPos, TILE_PATH);

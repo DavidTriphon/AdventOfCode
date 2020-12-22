@@ -2,6 +2,8 @@ package davidt.aoc.map;
 
 import org.junit.jupiter.api.*;
 
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -110,8 +112,36 @@ class PositionTest
    
    
    @Test
-   void testSet()
+   void equals()
    {
+      Position posA = new Position(1);
+      Position pos1 = new Position(1);
+      Position pos2 = new Position(2);
+      Position pos3 = new Position(3);
+      Position posB = new Position(1, 1);
+      Position posC = new Position(1, 2);
+      Position posD = new Position(1, 2);
+      
+      // equals for identity
+      assertEquals(posA, posA);
+      assertEquals(pos1, pos1);
+      assertEquals(pos2, pos2);
+      assertEquals(pos3, pos3);
+      
+      // equals (&not) for dims
+      assertEquals(posA, pos1);
+      assertNotEquals(pos1, pos2);
+      assertNotEquals(pos2, pos3);
+      
+      // different nums
+      assertNotEquals(posA, posB);
+      assertNotEquals(posA, posC);
+      assertNotEquals(posA, posD);
+      
+      assertNotEquals(posB, posC);
+      assertNotEquals(posB, posD);
+      
+      assertEquals(posC, posD);
    }
    
    
@@ -203,8 +233,8 @@ class PositionTest
    void getOpposite()
    {
       Position pos = new Position(new int[] {1, 1, 1});
-      assertEquals(new Position(new int[] {-1, -1, -1}), pos.getOpposite());
-      assertEquals(new Position(new int[] {1, -1, 1}), pos.getOpposite(1));
+      assertEquals(new Position(new int[] {-1, -1, -1}), pos.copy().negate());
+      assertEquals(new Position(new int[] {1, -1, 1}), pos.copy().negate(1));
    }
    
    
@@ -214,9 +244,29 @@ class PositionTest
       Position pos = new Position(new int[] {1, 2, 3});
       Position bounds = new Position(new int[] {10, 10, 10});
       int index = 321;
-      
+   
       assertEquals(index, Position.getIndexOfPosIn(pos, bounds));
-      
+   
       assertEquals(pos, Position.getPosOfIndexIn(index, bounds));
+   }
+   
+   
+   @Test
+   void listContainedPositions()
+   {
+      Position pos = new Position(new int[] {2, 3, 5});
+      List <Position> containedPositions = pos.listContainedPositions();
+      
+      assertEquals(2 * 3 * 5, containedPositions.size());
+      for (int i = 0; i < containedPositions.size(); i++)
+      {
+         assertNotEquals(2, containedPositions.get(i).getX());
+         assertNotEquals(3, containedPositions.get(i).getY());
+         assertNotEquals(5, containedPositions.get(i).getZ());
+         for (int j = i + 1; j < containedPositions.size(); j++)
+         {
+            assertNotEquals(containedPositions.get(j), containedPositions.get(i));
+         }
+      }
    }
 }

@@ -100,10 +100,10 @@ public enum CompassDir implements IDimensional.Gettable <Integer>
    
    
    @Override
-   public Integer get(int dimensionIndex)
+   public Integer get(int dim)
    {
-      IDimensional.checkDimIndexArg(this, dimensionIndex);
-      if (dimensionIndex == 0)
+      IDimensional.checkDimIndexArg(this, dim);
+      if (dim == 0)
          return x;
       else
          return y;

@@ -73,7 +73,7 @@ class CompassDirTest
    {
       // the sum of all directions must be zero
       Position pos1 = new Position(2);
-      Arrays.stream(CompassDir.values()).forEach(pos1::addBy);
+      Arrays.stream(CompassDir.values()).forEach(pos1::add);
       assertEquals(new Position(2), pos1);
    }
    
@@ -86,7 +86,7 @@ class CompassDirTest
          (dir) ->
          {
             Position pos2 = new Position(2);
-            pos2.addBy(dir);
+            pos2.add(dir);
          
             int absX = Math.abs(pos2.getX());
             int absY = Math.abs(pos2.getY());
