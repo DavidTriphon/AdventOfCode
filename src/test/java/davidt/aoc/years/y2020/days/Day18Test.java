@@ -61,6 +61,6 @@ class Day18Test
    
    public static URL getURLHelper(int exampleNum)
    {
-      return Day17Test.class.getResource(String.format("input/18/example%d.txt", exampleNum));
+      return Day18Test.class.getResource(String.format("input/18/example%d.txt", exampleNum));
    }
 }
